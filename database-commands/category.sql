@@ -1,8 +1,7 @@
 CREATE TABLE category(
     categoryID SERIAL PRIMARY KEY,
     name VARCHAR(50) UNIQUE NOT NULL,
-    description TEXT
-    );
+    description TEXT);
 
 insert into category (name, description) values ('BLU', 'Morbi odio odio, elementum eu, interdum eu, tincidunt in, leo. Maecenas pulvinar lobortis est. Phasellus sit amet erat. Nulla tempus. Vivamus in felis eu sapien cursus vestibulum. Proin eu mi.');
 insert into category (name, description) values ('Samsung', 'Nam dui. Proin leo odio, porttitor id, consequat in, consequat ut, nulla. Sed accumsan felis. Ut at dolor quis odio consequat varius. Integer ac leo. Pellentesque ultrices mattis odio. Donec vitae nisi.');
