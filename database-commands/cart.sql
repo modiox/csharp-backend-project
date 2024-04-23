@@ -1,4 +1,4 @@
-CREATE TABLE Cart (
+CREATE TABLE cart (
     cartID SERIAL PRIMARY KEY,
     FOREIGN KEY(productID) REFERENCES product(productID),
     FOREIGN KEY(customerID) REFERENCES customer(customerID)
