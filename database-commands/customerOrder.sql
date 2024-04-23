@@ -7,3 +7,14 @@ CREATE TABLE customerOrder(
     customerID INT,
     FOREIGN KEY(customerID) REFERENCES customer(customerID)
 );
+
+INSERT INTO customerOrder (orderStatus, customerID)
+VALUES
+('pending', 1),
+('processing', 2),
+('pending', 3),
+('shipped', 4),
+('pending', 5);
+
+-- SELECT * 
+-- FROM customerOrder;

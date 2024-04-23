@@ -1,7 +1,8 @@
 CREATE TABLE category(
     categoryID SERIAL PRIMARY KEY,
     name VARCHAR(50) UNIQUE NOT NULL,
-    description TEXT);
+    description TEXT
+    );
 
 INSERT INTO category(name, description)
 VALUES
