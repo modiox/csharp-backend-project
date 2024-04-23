@@ -7,4 +7,4 @@ Quantity INT NOT NULL ,
 Price DECIMAL(10, 2) NOT NULL,
 CreatedDate  TIMESTAMP Default CURRENT_TIMESTAMP ,
 FOREIGN KEY (CategoryID) SERIAL REFERENCES Category(CategoryID) 
-)
+);
