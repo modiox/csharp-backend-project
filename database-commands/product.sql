@@ -12,5 +12,5 @@ CREATE TABLE product (
  VALUES
  ('Apple','MobilePhone white (256GB)',5,4500,14),
  ('Apple','Ipad Yello (512GB)',10,6000,15),
- ('Samsung','GalaxyTab Black (128GB)',6,3000,16;
+ ('Samsung','GalaxyTab Black (128GB)',6,3000,16);
 
