@@ -13,4 +13,4 @@ DROP COLUMN customerID;
 
 ALTER TABLE cart
 ADD COLUMN userID INT, 
-ADD CONSTRAINT cart_userID_fkey FOREIGN KEY (userID) REFERENCES user(userID);
+ADD CONSTRAINT cart_userID_fkey FOREIGN KEY (userID) REFERENCES users(userID);

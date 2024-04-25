@@ -8,8 +8,7 @@ CREATE TABLE customerOrder(
     FOREIGN KEY(customerID) REFERENCES customer(customerID)
 );
 
--- ! The new Table
--- ! we need to run this query before inserting records  
+-- The new Table: need to run this query before inserting records  
 ALTER TABLE customerOrder
 ADD payment JSONB;
 
@@ -21,7 +20,7 @@ DROP COLUMN customerID;
 
 ALTER TABLE customerOrder
 ADD COLUMN userID INT, 
-ADD CONSTRAINT customer_userID_fkey FOREIGN KEY (userID) REFERENCES user(userID);
+ADD CONSTRAINT customer_userID_fkey FOREIGN KEY (userID) REFERENCES users(userID);
 
 -- inserting some dummy data
 INSERT INTO customerOrder (orderStatus, customerID, payment)
