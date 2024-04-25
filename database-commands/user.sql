@@ -1,0 +1,34 @@
+CREATE TABLE user( 
+ userID SERIAL PRIMARY KEY, 
+ username VARCHAR(50) UNIQUE NOT NULL, 
+ email VARCHAR(100) UNIQUE NOT NULL,
+ password VARCHAR(32) NOT NULL, 
+ firstName VARCHAR(20) NOT NULL,
+ lastName VARCHAR(20), 
+ phoneNumber VARCHAR(13) UNIQUE,
+ address VARCHAR(255), 
+ isAdmin BOOLEAN DEFAULT FALSE,
+ isBanned BOOLEAN DEFAULT FALSE,
+ birthDate DATE,
+createdAT TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+ );
+
+-- Renamed the table to users and column to usersID
+
+ALTER TABLE customer RENAME TO user;
+ALTER TABLE user RENAME COLUMN customerID TO userID;
+
+
+
+ ALTER TABLE user
+ ADD COLUMN isBanned BOOLEAN DEFAULT FALSE; 
+
+ ALTER TABLE user 
+ ADD COLUMN isAdmin BOOLEAN DEFAULT FALSE;  -- false: customer, true: admin
+
+ ALTER TABLE user
+ ADD COLUMN createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
+
+
+
+

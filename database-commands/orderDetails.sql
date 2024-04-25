@@ -1,5 +1,4 @@
 CREATE TABLE orderDetails (
-    orderDetailsID SERIAL PRIMARY KEY,
     orderID INT,
     productID INT,
     productQuantity INT NOT NULL,

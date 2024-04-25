@@ -4,7 +4,7 @@ CREATE TABLE customerOrder(
     orderID SERIAL Primary Key,
     orderStatus orderStatusEnum,
     createdDate TIMESTAMP Default CURRENT_TIMESTAMP,
-    customerID INT,
+    customerID INT[],
     FOREIGN KEY(customerID) REFERENCES customer(customerID)
 );
 
@@ -18,3 +18,13 @@ VALUES
 
 -- SELECT * 
 -- FROM customerOrder;
+
+ALTER TABLE customerOrder
+DROP CONSTRAINT customerOrder_customerid_fkey; 
+
+ALTER TABLE customerOrder 
+DROP COLUMN customerID; 
+
+ALTER TABLE customerOrder
+ADD COLUMN userID INT, 
+ADD CONSTRAINT customer_userID_fkey FOREIGN KEY (userID) REFERENCES user(userID);
