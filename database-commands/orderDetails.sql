@@ -8,9 +8,6 @@ CREATE TABLE orderDetails (
 );
 
 
-ALTER TABLE orderDetails 
-RENAME COLUMN orderDetails TO orderDetailsID;
-
 ALTER TABLE orderDetails
 DROP COLUMN orderDetailsID;
 
