@@ -4,7 +4,7 @@ CREATE TABLE customerOrder(
     orderID SERIAL Primary Key,
     orderStatus orderStatusEnum Default 'pending',
     createdDate TIMESTAMP Default CURRENT_TIMESTAMP,
-    customerID INT,
+    customerID INT[],
     FOREIGN KEY(customerID) REFERENCES customer(customerID)
 );
 
@@ -12,6 +12,16 @@ CREATE TABLE customerOrder(
 -- ! we need to run this query before inserting records  
 ALTER TABLE customerOrder
 ADD payment JSONB;
+
+ALTER TABLE customerOrder
+DROP CONSTRAINT customerOrder_customerid_fkey; 
+
+ALTER TABLE customerOrder 
+DROP COLUMN customerID; 
+
+ALTER TABLE customerOrder
+ADD COLUMN userID INT, 
+ADD CONSTRAINT customer_userID_fkey FOREIGN KEY (userID) REFERENCES user(userID);
 
 -- inserting some dummy data
 INSERT INTO customerOrder (orderStatus, customerID, payment)
@@ -34,7 +44,3 @@ from customerOrder t1
 inner join orderDetails t2 on t1.orderID = t2.orderID
 inner join product t3 on t2.productID=t3.productID;
 
--- same as the on above 
-SELECT t1.customerID, t1.orderID, t1.orderStatus, t2.productQuantity, t3.productName, t3.price
-FROM customerOrder t1, orderDetails t2, product t3
-WHERE t1.orderID = t2.orderID AND t2.productID=t3.productID;

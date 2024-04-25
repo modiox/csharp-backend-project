@@ -1,6 +1,5 @@
 -- ! I think is better to use an array for productId but I do not know how we can reference it to an integer 
 CREATE TABLE orderDetails (
-    orderDetailsID SERIAL PRIMARY KEY,
     orderID INT,
     productID INT,
     productQuantity INT NOT NULL,
