@@ -11,7 +11,7 @@ CREATE TABLE cart (
 
 CREATE TABLE cart (
     productID INT,
-    customerID INT, 
+    userID INT, 
     FOREIGN KEY (productID) REFERENCES product (productID),
     FOREIGN KEY (userID) REFERENCES users (userID)
 );
