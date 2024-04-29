@@ -1,12 +1,22 @@
 CREATE TYPE orderStatusEnum AS ENUM ('pending', 'processing', 'shipped', 'delivered');
 
+-- Old customerOrder table definition
+
 CREATE TABLE customerOrder(
     orderID SERIAL Primary Key,
     orderStatus orderStatusEnum Default 'pending',
     createdDate TIMESTAMP Default CURRENT_TIMESTAMP,
     customerID INT[],
     FOREIGN KEY(customerID) REFERENCES customer(customerID)
-);
+); 
+-- New customerOrder table definition 
+CREATE TABLE customerOrder(
+    orderID SERIAL Primary Key,
+    orderStatus orderStatusEnum Default 'pending',
+    createdDate TIMESTAMP Default CURRENT_TIMESTAMP,
+    customerID INT[],
+    FOREIGN KEY(userID) REFERENCES users(userID)
+); 
 
 -- The new Table: need to run this query before inserting records  
 ALTER TABLE customerOrder
@@ -14,6 +24,8 @@ ADD payment JSONB;
 
 ALTER TABLE customerOrder
 DROP CONSTRAINT customerOrder_customerid_fkey; 
+
+--Alter queries entered in pgAdmin instead of dropping the entire table 
 
 ALTER TABLE customerOrder 
 DROP COLUMN customerID; 

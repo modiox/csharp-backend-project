@@ -1,3 +1,35 @@
+
+-- Old customer table definition 
+CREATE TABLE Customer( 
+ CustomerID SERIAL PRIMARY KEY, 
+ Username VARCHAR(50) UNIQUE NOT NULL, 
+ Email VARCHAR(100) UNIQUE NOT NULL,
+ Password VARCHAR(32) NOT NULL, 
+ FirstName VARCHAR(20) NOT NULL,
+ LastName VARCHAR(20), 
+ phoneNumber VARCHAR(13) UNIQUE,
+ Address VARCHAR(255), 
+ DateOfBirth DATE
+ );
+
+-- Renamed the table to users and column to usersID
+
+ALTER TABLE customer RENAME TO users;
+ALTER TABLE users RENAME COLUMN customerID TO userID;
+
+
+ -- Queries entered in pgAdmin instead of dropping the entire table 
+
+ ALTER TABLE users
+ ADD COLUMN isBanned BOOLEAN DEFAULT FALSE; 
+
+ ALTER TABLE users 
+ ADD COLUMN isAdmin BOOLEAN DEFAULT FALSE;  -- false: customer, true: admin
+
+ ALTER TABLE users
+ ADD COLUMN createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
+
+ -- The new users table definition 
 CREATE TABLE users( 
  userID SERIAL PRIMARY KEY, 
  username VARCHAR(50) UNIQUE NOT NULL, 
@@ -13,26 +45,9 @@ CREATE TABLE users(
  createdAT TIMESTAMP DEFAULT CURRENT_TIMESTAMP
  );
 
--- Renamed the table to users and column to usersID
-
-ALTER TABLE customer RENAME TO users;
-ALTER TABLE users RENAME COLUMN customerID TO userID;
 
 
-
- ALTER TABLE users
- ADD COLUMN isBanned BOOLEAN DEFAULT FALSE; 
-
- ALTER TABLE users 
- ADD COLUMN isAdmin BOOLEAN DEFAULT FALSE;  -- false: customer, true: admin
-
- ALTER TABLE users
- ADD COLUMN createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
-
-
-
-
-
+ -- Mock values 
 insert into users (username, email, password, firstName, lastName, phoneNumber, address, isAdmin, isBanned, birthDate) values ('hshotbolt0', 'hshotbolt0@umn.edu', 'aF0@f~%Bz', 'Halli', 'Shotbolt', '313-874-7580', '7117 Mallory Point', false, false, '1944-02-04');
 insert into users (username, email, password, firstName, lastName, phoneNumber, address, isAdmin, isBanned, birthDate) values ('cmccombe1', 'cmccombe1@godaddy.com', 'mG8+Hm4\OJ_&', 'Clarissa', 'McCombe', '351-679-0440', '2356 Jenna Trail', true, false, '1927-12-01');
 insert into users (username, email, password, firstName, lastName, phoneNumber, address, isAdmin, isBanned, birthDate) values ('bbutten2', 'bbutten2@java.com', 'hY3<|DLg1y+O1', 'Barry', 'Butten', '841-935-7450', '32127 Surrey Lane', false, false, '1946-07-05');
