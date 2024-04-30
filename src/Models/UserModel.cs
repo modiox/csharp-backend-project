@@ -1,23 +1,24 @@
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
-
-[Table("Users")]
-public class User
+public class UserModel 
 {
-
-    [Key, Required] //userid is the primary key 
     public Guid UserID { get; set; } = Guid.NewGuid();
 
     [Required(ErrorMessage = "Username is required")][StringLength(50)] 
     public required string Username { get; set; }
 
     [Required(ErrorMessage = "Email is required")]
-    [StringLength(100)]
+    [StringLength(50, ErrorMessage = "Must be between 5 and 50 characters", MinimumLength = 5)]
+    [RegularExpression("^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$", ErrorMessage = "Must be a valid email")]
     public required string Email { get; set; }
 
+
     [Required(ErrorMessage = "Password is required")]
-    [StringLength(32)]
+    [StringLength(32, ErrorMessage = "Password must be between 8 and 32 characters", MinimumLength = 8)]
+    [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,32}$",ErrorMessage = "Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character")]
+    [DataType(DataType.Password)]
+
+   
     public required string Password { get; set; }
 
     [Required(ErrorMessage = "First name is required")]
