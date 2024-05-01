@@ -69,5 +69,19 @@ namespace api.Controllers
             return Ok();
         }
 
+        [HttpDelete("{orderId}")]
+        public async Task<IActionResult> DeleteOrder(string orderId)
+        {
+            if (!Guid.TryParse(orderId, out Guid orderIdGuid))
+            {
+                return BadRequest("Invalid user ID Format");
+            }
+            var result = await _customerOrderService.DeleteOrderService(orderIdGuid);
+            if (!result)
+            {
+                return NotFound();
+            }
+            return NoContent();
+        }
     }
 }
