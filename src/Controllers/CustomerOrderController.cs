@@ -53,5 +53,21 @@ namespace api.Controllers
                 return StatusCode(500, e.Message);
             }
         }
+
+        [HttpPut("{orderId}")]
+        public async Task<IActionResult> UpdateOrder(string orderId, CustomerOrderModel updateOrder)
+        {
+            if (!Guid.TryParse(orderId, out Guid orderIdGuid))
+            {
+                return BadRequest("Invalid user ID Format");
+            }
+            var result = await _customerOrderService.UpdateOrderService(orderIdGuid, updateOrder);
+            if (!result)
+            {
+                return NotFound();
+            }
+            return Ok();
+        }
+
     }
 }
