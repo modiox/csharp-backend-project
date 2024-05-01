@@ -1,6 +1,9 @@
-using Microsoft.EntityFrameworkCore;
+
+using Microsoft.AspNetCore.Routing.Constraints;
+using Microsoft.Extensions.Options;
 using Npgsql.EntityFrameworkCore.PostgreSQL;
 using Microsoft.Extensions.DependencyInjection;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +15,7 @@ builder.Services.AddDbContext<AppDBContext>(options => options.UseNpgsql(builder
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
+
 
 //Add each newly created Services here
 builder.Services.AddScoped<UserService>();
