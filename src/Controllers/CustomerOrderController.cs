@@ -14,12 +14,30 @@ namespace api.Controllers
         {
             _customerOrderService = new CustomerOrderService(appDbContext);
         }
-        
+
         [HttpGet]
         public async Task<IActionResult> GetAllOrder()
         {
             var orders = await _customerOrderService.GetAllOrdersService();
             return Ok(orders);
+        }
+
+        [HttpGet("{orderId}")]
+        public async Task<IActionResult> GetOrder(string orderId)
+        {
+            if (!Guid.TryParse(orderId, out Guid orderIdGuid))
+            {
+                return BadRequest("Invalid user ID Format");
+            }
+            var order = await _customerOrderService.GetOrderById(orderIdGuid);
+            if (order == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(order);
+            }
         }
     }
 }
