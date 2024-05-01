@@ -12,6 +12,8 @@ builder.Services.AddDbContext<AppDBContext>(options => options.UseNpgsql(builder
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
+
+//Add each newly created Services here
 builder.Services.AddScoped<UserService>();
 
 
