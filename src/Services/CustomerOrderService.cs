@@ -60,4 +60,24 @@ public class CustomerOrderService
         return Task.FromResult(_appDbContext.CustomerOrders.Find(orderId));
     }
 
+        public async void CreateOrderService(CustomerOrderModel newOrder)
+    {
+        await Task.CompletedTask; // Simulate an asynchronous operation without delay
+
+        // Create record
+        var order = new CustomerOrder
+        {
+            OrderId = Guid.NewGuid(),
+            Status = OrderStatus.Pending,
+            Payment = newOrder.Payment,
+            ProductId = newOrder.ProductId,
+            UserId = newOrder.UserId
+        };
+
+        // Add the record to the context
+        _appDbContext.CustomerOrders.Add(order);
+        // Save to database
+        _appDbContext.SaveChanges();
+    }
+
 }
