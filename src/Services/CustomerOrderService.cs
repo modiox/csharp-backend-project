@@ -53,4 +53,11 @@ public class CustomerOrderService
         ).ToList();
         return dataList.AsEnumerable();
     }
+
+    // TODO : Fix it to return a single order with the user information
+    public Task<CustomerOrder?> GetOrderById(Guid orderId)
+    {
+        return Task.FromResult(_appDbContext.CustomerOrders.Find(orderId));
+    }
+
 }
