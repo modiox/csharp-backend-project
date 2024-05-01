@@ -18,7 +18,6 @@ public class UserModel
     [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,32}$",ErrorMessage = "Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character")]
     [DataType(DataType.Password)]
 
-   
     public required string Password { get; set; }
 
     [Required(ErrorMessage = "First name is required")]
@@ -37,5 +36,5 @@ public class UserModel
     public bool IsAdmin { get; set; } = false; 
     public bool IsBanned { get; set; } = false; 
     public DateTime BirthDate { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.Now;
+   // public DateTime CreatedAt { get; set; } = DateTime.Now;
 }

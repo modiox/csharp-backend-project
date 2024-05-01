@@ -1,84 +1,181 @@
 
-using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Update.Internal;
+using Microsoft.Extensions.Configuration.UserSecrets;
+using Microsoft.Extensions.Logging;
 
-namespace api.Controllers
+public class UserService
 {
-    [ApiController]
-    [Route("/api/users")]
-    public class UserController : ControllerBase
+    private readonly AppDBContext _dbContext;
+    private readonly ILogger<UserService> _logger;
+
+    public UserService(AppDBContext dbContext, ILogger<UserService> logger)
     {
+        _dbContext = dbContext;
+        _logger = logger;
+    }
 
+   
 
-        private readonly UserService _userService;
-        public UserController()
+    public async Task<IEnumerable<UserModel>> GetAllUsersAsync()
+    {
+        // Retrieve users asynchronously
+        var dataList = await _dbContext.Users.ToListAsync();
+
+        // Map data to UserModel
+        var users = dataList.Select(row => new UserModel
         {
-            _userService = new UserService();
-        }
+            UserID = row.UserID,
+            Username = row.Username,
+            Email = row.Email,
+            Password = row.Password,
+            FirstName = row.FirstName,
+            LastName = row.LastName,
+            PhoneNumber = row.PhoneNumber,
+            Address = row.Address,
+            IsAdmin = row.IsAdmin,
+            IsBanned = row.IsBanned,
+            BirthDate = row.BirthDate ?? DateTime.MinValue,
+        
+        }).ToList();
 
-        [HttpGet]
-        public IActionResult GetAllUsers()
-        {
-            var users = _userService.GetAllUsersService();
-            return Ok(users);
-        }
+        return users;
+    }
 
-        [HttpGet("{userId}")]
-        public IActionResult GetUser(string userId)
+    public UserModel GetUserById(Guid userId)
+    {
+        try
         {
-            if (!Guid.TryParse(userId, out Guid userIdGuid))
+            var userEntity = _dbContext.Users.FirstOrDefault(u => u.UserID == userId);
+            if (userEntity != null)
             {
-                return BadRequest("Invalid user ID Format");
-            }
-            var user = _userService.GetUserById(userIdGuid);
-            if (user == null)
-            {
-                return NotFound();
+                var userModel = new UserModel
+                {
+                    UserID = userEntity.UserID,
+                    Username = userEntity.Username,
+                    Email = userEntity.Email,
+                    Password = userEntity.Password,
+                    FirstName = userEntity.FirstName,
+                    LastName = userEntity.LastName,
+                    PhoneNumber = userEntity.PhoneNumber,
+                    Address = userEntity.Address,
+                    IsAdmin = userEntity.IsAdmin,
+                    IsBanned = userEntity.IsBanned,
+                    BirthDate = userEntity.BirthDate ?? DateTime.MinValue,
+    
+                };
+                return userModel;
             }
             else
             {
-                return Ok(user);
+                // Handle the case where the user is not found
+                return null; 
             }
-
         }
-
-        [HttpPost]
-        public IActionResult CreateUser(User newUser)
+        catch (Exception ex)
         {
-            var createdUser = _userService.CreateUserService(newUser);
-            return CreatedAtAction(nameof(GetUser), new { userId = createdUser.UserID }, createdUser);
+            _logger.LogError(ex, $"Error occurred while retrieving user with ID: {userId}.");
+            throw;
         }
-
-
-        [HttpPut("{userId}")]
-        public IActionResult UpdateUser(string userId, User updateUser)
-        {
-            if (!Guid.TryParse(userId, out Guid userIdGuid))
-            {
-                return BadRequest("Invalid user ID Format");
-            }
-            var user = _userService.UpdateUserService(userIdGuid, updateUser);
-            if (user == null)
-            {
-                return NotFound();
-            }
-            return Ok(user);
-        }
-
-
-        [HttpDelete("{userId}")]
-        public IActionResult DeleteUser(string userId)
-        {
-            if (!Guid.TryParse(userId, out Guid userIdGuid))
-            {
-                return BadRequest("Invalid user ID Format");
-            }
-            var result = _userService.DeleteUserService(userIdGuid);
-            if (!result)
-            {
-                return NotFound();
-            }
-            return NoContent();
-        }
-
     }
+
+
+
+    public bool CreateUser(UserModel newUser, out UserModel createdUser)
+    {
+        try
+        {
+            User createUser = new User
+            {
+                UserID = Guid.NewGuid(),
+                Username = newUser.Username,
+                Email = newUser.Email,
+                Password = newUser.Password,
+                FirstName = newUser.FirstName,
+                LastName = newUser.LastName,
+                CreatedAt = DateTime.Now,
+            };
+
+            _dbContext.Users.Add(createUser);
+
+            // Save changes to the database
+            int result = _dbContext.SaveChanges();
+
+            if (result > 0)
+            {
+                // Operation successful, return the newly created user
+                createdUser = new UserModel
+                {
+                    UserID = createUser.UserID,
+                    Username = createUser.Username,
+                    Email = createUser.Email,
+                    Password = createUser.Password,
+                    FirstName = createUser.FirstName,
+                    LastName = createUser.LastName,
+                    PhoneNumber = createUser.PhoneNumber,
+                    Address = createUser.Address,
+                    IsAdmin = createUser.IsAdmin,
+                    IsBanned = createUser.IsBanned,
+                    BirthDate = createUser.BirthDate ?? DateTime.MinValue,
+
+                };
+                return true;
+            }
+            else
+            {
+                createdUser = null;
+                return false;
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred while creating a new user.");
+            throw;
+        }
+    }
+
+    public bool UpdateUser(Guid userId, UserModel updateUser)
+    {
+        try
+        {
+            var existingUser = _dbContext.Users.FirstOrDefault(u => u.UserID == userId);
+            if (existingUser != null && updateUser != null)
+            {
+                existingUser.Username = updateUser.Username;
+                existingUser.Email = updateUser.Email;
+                existingUser.Password = updateUser.Password;
+                existingUser.FirstName = updateUser.FirstName;
+                existingUser.LastName = updateUser.LastName;
+
+                _dbContext.SaveChanges();
+                return true; // Return true indicating successful update
+            }
+
+            return false; // Return false if either existingUser or updateUser is null
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Error occurred while updating user with ID: {userId}.");
+            return false; // Return false if an exception occurs during the update operation
+        }
+    }
+
+
+    public bool DeleteUser(Guid userId)
+    {
+
+        var userToDelete = _dbContext.Users.FirstOrDefault(u => u.UserID == userId);
+        if (userToDelete != null)
+        {
+            _dbContext.Users.Remove(userToDelete);
+            _dbContext.SaveChanges();
+            return true;
+        }
+        return false;
+    }
+
+   
 }

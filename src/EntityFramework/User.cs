@@ -9,8 +9,9 @@ public class User
     [Key, Required] //userid is the primary key 
     public Guid UserID { get; set; } = Guid.NewGuid();
 
-    [Required(ErrorMessage = "Username is required")][StringLength(50)] 
-    public required string Username { get; set; }
+    [Required(ErrorMessage = "Username is required")]
+    [StringLength(50)]
+    public string Username { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "Email is required")]
     [StringLength(100)]
@@ -26,15 +27,15 @@ public class User
 
     [Required(ErrorMessage = "Last name is required")]
     [StringLength(20)]
-    public required string LastName { get; set; } 
+    public required string LastName { get; set; }
 
     [StringLength(20)]
     public string PhoneNumber { get; set; } = string.Empty;
 
     [StringLength(255)]
     public string Address { get; set; } = string.Empty;
-    public bool IsAdmin { get; set; } = false; 
-    public bool IsBanned { get; set; } = false; 
-    public DateTime BirthDate { get; set; }
+    public bool IsAdmin { get; set; } = false;
+    public bool IsBanned { get; set; } = false;
+    public DateTime? BirthDate { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.Now;
 }
