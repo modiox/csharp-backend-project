@@ -39,5 +39,19 @@ namespace api.Controllers
                 return Ok(order);
             }
         }
+
+        [HttpPost]
+        public IActionResult CreateOrder(CustomerOrderModel newOrder)
+        {
+            try
+            {
+                _customerOrderService.CreateOrderService(newOrder);
+                return StatusCode(201, "Order added");
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
     }
 }
