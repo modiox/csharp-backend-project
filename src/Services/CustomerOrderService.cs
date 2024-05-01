@@ -80,4 +80,20 @@ public class CustomerOrderService
         _appDbContext.SaveChanges();
     }
 
+        public async Task<bool> UpdateOrderService(Guid orderId, CustomerOrderModel updateOrder)
+    {
+        await Task.CompletedTask;
+        var existingOrder = _appDbContext.CustomerOrders.FirstOrDefault(o => o.OrderId == orderId);
+        if (existingOrder != null)
+        {
+            existingOrder.Status = updateOrder.Status;
+
+            // Add the record to the context
+            _appDbContext.CustomerOrders.Update(existingOrder);
+            // Save to database
+            _appDbContext.SaveChanges();
+            return true;
+        }
+        return false;
+    }
 }
