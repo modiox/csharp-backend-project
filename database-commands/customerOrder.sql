@@ -14,7 +14,7 @@ CREATE TABLE customerOrder(
     orderID SERIAL Primary Key,
     orderStatus orderStatusEnum Default 'pending',
     createdDate TIMESTAMP Default CURRENT_TIMESTAMP,
-    customerID INT[],
+    userID INT[],
     FOREIGN KEY(userID) REFERENCES users(userID)
 ); 
 
@@ -35,7 +35,7 @@ ADD COLUMN userID INT,
 ADD CONSTRAINT customer_userID_fkey FOREIGN KEY (userID) REFERENCES users(userID);
 
 -- inserting some dummy data
-INSERT INTO customerOrder (orderStatus, customerID, payment)
+INSERT INTO customerOrder (orderStatus, userID, payment)
 VALUES
 ('pending', 1, '{"method": "Credit Card", "amount": 50}'),
 ('processing', 2, '{"method": "Credit Card", "amount": 100}'),
@@ -50,7 +50,7 @@ SELECT *
 FROM customerOrder;
 
 -- it wil return customer id with his order details
-select t1.customerID, t1.orderID, t1.orderStatus, t2.productQuantity, t3.productName, t3.price
+select t1.userID, t1.orderID, t1.orderStatus, t2.productQuantity, t3.productName, t3.price
 from customerOrder t1 
 inner join orderDetails t2 on t1.orderID = t2.orderID
 inner join product t3 on t2.productID=t3.productID;

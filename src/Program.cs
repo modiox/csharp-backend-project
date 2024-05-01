@@ -1,15 +1,26 @@
+
 using Microsoft.AspNetCore.Routing.Constraints;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Npgsql.EntityFrameworkCore.PostgreSQL;
+using Microsoft.Extensions.DependencyInjection;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddDbContext<AppDBContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
-builder.Services.AddDbContext<AppDBContext>(Options => Options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+
+//Add each newly created Services here
+builder.Services.AddScoped<UserService>();
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
