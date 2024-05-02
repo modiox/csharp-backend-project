@@ -1,35 +1,42 @@
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
 
-namespace api.Models{
-    
-public enum Status { pending, processing, shipped, delivered };
-
+public enum OrderStatus { Creating = 0, Pending = 1, Processing = 2, Shipped = 3, Delivered = 4 };
+// public enum Status { pending, processing, shipped, delivered };
 public enum PaymentMethod { CreditCard, ApplePay, Visa, Cash, PayPal };
-
-public record class OrderPayment(
-    [Required(ErrorMessage = "Payment Method is required!")]
-    PaymentMethod Method,
-
-    [Required(ErrorMessage = "Amount is Required!")]
-    [Range(0, double.MaxValue, ErrorMessage ="The amount should be more than 0!")]
-    double Amount
-);
-
 public class CustomerOrderModel
 {
+  [Required(ErrorMessage = "Order Id is required")]
+  public required Guid OrderId { get; set; }
 
-    public Guid OrderId { get; set; } = Guid.NewGuid();
+  [Required(ErrorMessage = "Order Status is required")]
+  public required OrderStatus Status { get; set; }
 
-    [Required(ErrorMessage = "User Id is required!")]
-    public required Guid UserId { get; set; }
+  [Required(ErrorMessage = "Payment method is required")]
+  public required string Payment { get; set; }
 
-    // public virtual User? User { get; set; }
+  [Required(ErrorMessage = "Product Id is required")]
+  public required Guid ProductId { get; set; }
 
-    public Status OrderStatus { get; set; } = Status.pending;
+  // public virtual List<ProductModel>? Product { get; set; }
 
-    public DateTime CreatedAt { get; set; } = DateTime.Now;
+  [Required(ErrorMessage = "User Id is required")]
+  public Guid UserId { get; set; }
+//   public required OrderPayment Payment { get; set; }
 
-    public required OrderPayment Payment { get; set; }
+  // public virtual UserModel? User { get; set; }
+  
+  
+// public record class OrderPayment(
+//     [Required(ErrorMessage = "Payment Method is required!")]
+//     PaymentMethod Method,
 
-}
+//     [Required(ErrorMessage = "Amount is Required!")]
+//     [Range(0, double.MaxValue, ErrorMessage ="The amount should be more than 0!")]
+//     double Amount
+// );
+
+
+
+
 }

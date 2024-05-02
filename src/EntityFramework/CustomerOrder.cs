@@ -1,37 +1,45 @@
+
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace api.EntityFramework
 {
-    public enum Status { pending, processing, shipped, delivered };
-
-    public enum PaymentMethod { CreditCard, ApplePay, Visa, Cash, PayPal };
-
-    public record class OrderPayment(
-    [Required(ErrorMessage = "Payment Method is required!")]
-        PaymentMethod Method,
-
-        [Required(ErrorMessage = "Amount is Required!")]
-        [Range(0, double.MaxValue, ErrorMessage ="The amount should be more than 0!")]
-        double Amount
-    );
-
-    [Table("CustomerOrders")]
+    [Table("CustomerOrder")]
     public class CustomerOrder
     {
-        [Key]
-        public Guid OrderId { get; set; } = Guid.NewGuid();
+      
+         public enum Status { pending, processing, shipped, delivered };
 
-        [Required(ErrorMessage = "User Id is required!")]
-        public required Guid UserId { get; set; }
+         public enum PaymentMethod { CreditCard, ApplePay, Visa, Cash, PayPal }; 
+      
+        [Key, Required(ErrorMessage = "Order Id is required")]
+        public required Guid OrderId { get; set; }
 
+        [Required(ErrorMessage = "Order Status is required")]
+        public required OrderStatus Status { get; set; } = OrderStatus.Pending;
+
+        [Required(ErrorMessage = "Payment method is required")]
+        public required string Payment { get; set; }
+
+        [Required(ErrorMessage = "User Id is required")]
+        public Guid UserId { get; set; }
+
+        [Required(ErrorMessage = "Product Id is required")]
+        public Guid ProductId { get; set; }
+
+        [ForeignKey("UserId")]
         public virtual User? User { get; set; }
 
-        public Status OrderStatus { get; set; } = Status.pending;
+        // [ForeignKey("UserId")]
+        // public virtual List<Product>? Product { get; set; }
+      
+        public required OrderPayment Payment { get; set;
 
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
-
-        public required OrderPayment Payment { get; set; }
+        
 
     }
 }

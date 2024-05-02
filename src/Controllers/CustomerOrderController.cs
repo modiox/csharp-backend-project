@@ -1,3 +1,5 @@
+
+using api.EntityFramework;
 using api.Models;
 using api.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -5,30 +7,34 @@ using Microsoft.AspNetCore.Mvc;
 namespace api.Controllers
 {
     [ApiController]
-    [Route("/api/customerOrders")] //the commen route
+    [Route("/api/customer-order")]
     public class CustomerOrderController : ControllerBase
     {
 
         private readonly CustomerOrderService _customerOrderService;
 
-        public CustomerOrderController()
+
+        public CustomerOrderController(AppDbContext appDbContext)
         {
-            _customerOrderService = new CustomerOrderService();
+            _customerOrderService = new CustomerOrderService(appDbContext);
         }
 
         [HttpGet]
-        public IActionResult GetAllCustomerOrders()
+        public async Task<IActionResult> GetAllOrder()
         {
-            try
-            {
-                var orders = _customerOrderService.GetAllCustomerOrdersService();
-                return Ok(orders);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
+            var orders = await _customerOrderService.GetAllOrdersService();
+            return Ok(orders);
         }
+
+        [HttpGet("{orderId}")]
+        public async Task<IActionResult> GetOrder(string orderId)
+        {
+            if (!Guid.TryParse(orderId, out Guid orderIdGuid))
+            {
+                return BadRequest("Invalid user ID Format");
+            }
+            var order = await _customerOrderService.GetOrderById(orderIdGuid);
+
 
         [HttpGet("{orderId}")]
         public IActionResult GetCustomerOrderById(string orderId)
@@ -39,10 +45,64 @@ namespace api.Controllers
             }
 
             var order = _customerOrderService.GetCustomerOrderByIdService(orderIdGuid);
+
             if (order == null)
             {
                 return NotFound();
             }
+
+            else
+            {
+                return Ok(order);
+            }
+        }
+
+        [HttpPost]
+        public IActionResult CreateOrder(CustomerOrderModel newOrder)
+        {
+            try
+            {
+                _customerOrderService.CreateOrderService(newOrder);
+                return StatusCode(201, "Order added");
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+//         [HttpPut("{orderId}")]
+//         public async Task<IActionResult> UpdateOrder(string orderId, CustomerOrderModel updateOrder)
+//         {
+//             if (!Guid.TryParse(orderId, out Guid orderIdGuid))
+//             {
+//                 return BadRequest("Invalid user ID Format");
+//             }
+//             var result = await _customerOrderService.UpdateOrderService(orderIdGuid, updateOrder);
+//             if (!result)
+//             {
+//                 return NotFound();
+//             }
+//             return Ok();
+//         }
+
+        [HttpDelete("{orderId}")]
+        public async Task<IActionResult> DeleteOrder(string orderId)
+        {
+            if (!Guid.TryParse(orderId, out Guid orderIdGuid))
+            {
+                return BadRequest("Invalid user ID Format");
+            }
+            var result = await _customerOrderService.DeleteOrderService(orderIdGuid);
+            if (!result)
+            {
+                return NotFound();
+            }
+            return NoContent();
+        }
+    }
+}
+
 
             return Ok(order);
         }
@@ -71,22 +131,8 @@ namespace api.Controllers
             return Ok(order);
         }
 
-        [HttpDelete]
-        public IActionResult DeleteCustomerOrder(string orderId)
-        {
-            if (!Guid.TryParse(orderId, out Guid orderIdGuid))
-            {
-                return BadRequest("Invalid order ID Format");
-            }
-
-            var order = _customerOrderService.DeleteCustomerOrderService(orderIdGuid);
-            if (!order)
-            {
-                return NotFound();
-            }
-
-            return NoContent();
-        }
+   
 
     }
 }
+
