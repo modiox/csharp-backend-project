@@ -8,7 +8,7 @@ namespace api.EntityFramework
     public enum PaymentMethod { CreditCard, ApplePay, Visa, Cash, PayPal };
 
     public record class OrderPayment(
-        [Required(ErrorMessage = "Payment Method is required!")]
+    [Required(ErrorMessage = "Payment Method is required!")]
         PaymentMethod Method,
 
         [Required(ErrorMessage = "Amount is Required!")]

@@ -13,6 +13,9 @@ public class AppDBContext: DbContext  {
     // public DbSet<OrderDetail> Orders {get; set; }
      public DbSet<CustomerOrder> CustomerOrders {get; set; }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder) { }
+    protected override void OnModelCreating(ModelBuilder modelBuilder) {
+        modelBuilder.Entity<CustomerOrder>().HasKey(o => o.OrderId);
+
+    }
 
 }

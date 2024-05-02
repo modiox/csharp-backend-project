@@ -3,11 +3,11 @@ using api.Models;
 namespace api.Services
 {
 
-    public class CustomerOrderServices
+    public class CustomerOrderService
     {
         // private readonly AppDBContext _appDbContext;
 
-        public CustomerOrderServices()
+        public CustomerOrderService()
         {
         }
 

@@ -9,11 +9,11 @@ namespace api.Controllers
     public class CustomerOrderController : ControllerBase
     {
 
-        private readonly CustomerOrderServices _customerOrderService;
+        private readonly CustomerOrderService _customerOrderService;
 
         public CustomerOrderController()
         {
-            _customerOrderService = new CustomerOrderServices();
+            _customerOrderService = new CustomerOrderService();
         }
 
         [HttpGet]

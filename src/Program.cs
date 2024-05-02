@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using Npgsql.EntityFrameworkCore.PostgreSQL;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
+using api.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,6 +21,11 @@ builder.Services.AddControllers();
 
 //Add each newly created Services here
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<CustomerOrderService>();
+builder.Services.AddScoped<CategoryService>();
+//builder.Services.AddScoped<ProductService>(); // //Will uncomment once added 
+
+
 
 
 var app = builder.Build();
