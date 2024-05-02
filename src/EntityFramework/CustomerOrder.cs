@@ -1,3 +1,4 @@
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -10,6 +11,11 @@ namespace api.EntityFramework
     [Table("CustomerOrder")]
     public class CustomerOrder
     {
+      
+         public enum Status { pending, processing, shipped, delivered };
+
+         public enum PaymentMethod { CreditCard, ApplePay, Visa, Cash, PayPal }; 
+      
         [Key, Required(ErrorMessage = "Order Id is required")]
         public required Guid OrderId { get; set; }
 
@@ -30,7 +36,10 @@ namespace api.EntityFramework
 
         // [ForeignKey("UserId")]
         // public virtual List<Product>? Product { get; set; }
+      
+        public required OrderPayment Payment { get; set;
 
         
+
     }
 }

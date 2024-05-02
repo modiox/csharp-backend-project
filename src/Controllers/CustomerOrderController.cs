@@ -1,4 +1,7 @@
+
 using api.EntityFramework;
+using api.Models;
+using api.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -9,6 +12,7 @@ namespace api.Controllers
     {
 
         private readonly CustomerOrderService _customerOrderService;
+
 
         public CustomerOrderController(AppDbContext appDbContext)
         {
@@ -30,10 +34,23 @@ namespace api.Controllers
                 return BadRequest("Invalid user ID Format");
             }
             var order = await _customerOrderService.GetOrderById(orderIdGuid);
+
+
+        [HttpGet("{orderId}")]
+        public IActionResult GetCustomerOrderById(string orderId)
+        {
+            if (!Guid.TryParse(orderId, out Guid orderIdGuid))
+            {
+                return BadRequest("Invalid customer order ID Format");
+            }
+
+            var order = _customerOrderService.GetCustomerOrderByIdService(orderIdGuid);
+
             if (order == null)
             {
                 return NotFound();
             }
+
             else
             {
                 return Ok(order);
@@ -54,20 +71,20 @@ namespace api.Controllers
             }
         }
 
-        [HttpPut("{orderId}")]
-        public async Task<IActionResult> UpdateOrder(string orderId, CustomerOrderModel updateOrder)
-        {
-            if (!Guid.TryParse(orderId, out Guid orderIdGuid))
-            {
-                return BadRequest("Invalid user ID Format");
-            }
-            var result = await _customerOrderService.UpdateOrderService(orderIdGuid, updateOrder);
-            if (!result)
-            {
-                return NotFound();
-            }
-            return Ok();
-        }
+//         [HttpPut("{orderId}")]
+//         public async Task<IActionResult> UpdateOrder(string orderId, CustomerOrderModel updateOrder)
+//         {
+//             if (!Guid.TryParse(orderId, out Guid orderIdGuid))
+//             {
+//                 return BadRequest("Invalid user ID Format");
+//             }
+//             var result = await _customerOrderService.UpdateOrderService(orderIdGuid, updateOrder);
+//             if (!result)
+//             {
+//                 return NotFound();
+//             }
+//             return Ok();
+//         }
 
         [HttpDelete("{orderId}")]
         public async Task<IActionResult> DeleteOrder(string orderId)
@@ -85,3 +102,37 @@ namespace api.Controllers
         }
     }
 }
+
+
+            return Ok(order);
+        }
+
+        [HttpPost]
+        public IActionResult CreateCustomerOrder(CustomerOrderModel newOrder)
+        {
+            var createdOrder = _customerOrderService.CreateCustomerOrderService(newOrder);
+            return CreatedAtAction(nameof(GetCustomerOrderById), new { orderId = createdOrder.OrderId }, createdOrder);
+        }
+
+        [HttpPut("{orderId}")]
+        public IActionResult UpdateCustomerOrder(string orderId, CustomerOrderModel updatedOrder)
+        {
+            if (!Guid.TryParse(orderId, out Guid orderIdGuid))
+            {
+                return BadRequest("Invalid order ID Format");
+            }
+
+            var order = _customerOrderService.UpdateCustomerOrderService(orderIdGuid, updatedOrder);
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(order);
+        }
+
+   
+
+    }
+}
+

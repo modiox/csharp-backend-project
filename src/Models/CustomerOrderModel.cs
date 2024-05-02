@@ -2,6 +2,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
 public enum OrderStatus { Creating = 0, Pending = 1, Processing = 2, Shipped = 3, Delivered = 4 };
+// public enum Status { pending, processing, shipped, delivered };
+public enum PaymentMethod { CreditCard, ApplePay, Visa, Cash, PayPal };
 public class CustomerOrderModel
 {
   [Required(ErrorMessage = "Order Id is required")]
@@ -20,6 +22,21 @@ public class CustomerOrderModel
 
   [Required(ErrorMessage = "User Id is required")]
   public Guid UserId { get; set; }
+//   public required OrderPayment Payment { get; set; }
 
   // public virtual UserModel? User { get; set; }
+  
+  
+// public record class OrderPayment(
+//     [Required(ErrorMessage = "Payment Method is required!")]
+//     PaymentMethod Method,
+
+//     [Required(ErrorMessage = "Amount is Required!")]
+//     [Range(0, double.MaxValue, ErrorMessage ="The amount should be more than 0!")]
+//     double Amount
+// );
+
+
+
+
 }
