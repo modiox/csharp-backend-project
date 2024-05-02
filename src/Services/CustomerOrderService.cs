@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using api.EntityFramework;
+using EntityFramework;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -26,21 +26,22 @@ public class CustomerOrderService
             Payment = row.Payment,
             ProductId = row.ProductId,
             UserId = row.UserId,
-            Product = _appDbContext.Products
-            .Where(p => p.ProductId == row.ProductId)
-            .Select(p => new ProductModel
-            {
-                Name = p.Name,
-                Price = p.Price,
-                Quantity = p.Quantity,
-                ShippingPrice = p.ShippingPrice,
-                CategoryId = p.CategoryId
-            })
-            .ToList(),
+            // ! When we done from the product uncomment me 
+            // Product = _appDbContext.Products
+            // .Where(p => p.ProductId == row.ProductId)
+            // .Select(p => new ProductModel
+            // {
+            //     ProductName = p.ProductName,
+            //     Price = p.Price,
+            //     Quantity = p.Quantity,
+            //     // ShippingPrice = p.ShippingPrice,
+            //     CategoryID = p.CategoryID
+            // })
+            // .ToList(),
             User = new UserModel
             {
-                UserId = row.User.UserId,
-                Name = row.User.Name,
+                UserID = row.User.UserID,
+                Username = row.User.Username,
                 FirstName = row.User.FirstName,
                 LastName = row.User.LastName,
                 Email = row.User.Email,
@@ -48,7 +49,7 @@ public class CustomerOrderService
                 Address = row.User.Address,
                 IsAdmin = row.User.IsAdmin,
                 IsBanned = row.User.IsBanned,
-                CreatedAt = row.User.CreatedAt,
+                // CreatedAt = row.User.CreatedAt,
             }
         }
         ).ToList();

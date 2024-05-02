@@ -6,16 +6,15 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace api.EntityFramework
+namespace EntityFramework
 {
+    public enum Status { pending, processing, shipped, delivered };
+    public enum Payment { CreditCard, ApplePay, Visa, Cash, PayPal };
+
     [Table("CustomerOrder")]
     public class CustomerOrder
     {
-      
-         public enum Status { pending, processing, shipped, delivered };
 
-         public enum PaymentMethod { CreditCard, ApplePay, Visa, Cash, PayPal }; 
-      
         [Key, Required(ErrorMessage = "Order Id is required")]
         public required Guid OrderId { get; set; }
 
@@ -23,7 +22,8 @@ namespace api.EntityFramework
         public required OrderStatus Status { get; set; } = OrderStatus.Pending;
 
         [Required(ErrorMessage = "Payment method is required")]
-        public required string Payment { get; set; }
+        public required PaymentMethod Payment { get; set; } = PaymentMethod.CreditCard;
+        // public required string Payment { get; set; }
 
         [Required(ErrorMessage = "User Id is required")]
         public Guid UserId { get; set; }
@@ -36,10 +36,7 @@ namespace api.EntityFramework
 
         // [ForeignKey("UserId")]
         // public virtual List<Product>? Product { get; set; }
-      
-        public required OrderPayment Payment { get; set;
 
-        
 
     }
 }
