@@ -1,6 +1,7 @@
 
 using System.ComponentModel;
 using System.Net.Http.Headers;
+using api.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 public class AppDBContext: DbContext  { 
     public AppDBContext(DbContextOptions options) : base(options){}

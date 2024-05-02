@@ -1,31 +1,26 @@
 using System.ComponentModel.DataAnnotations;
 
-public class Product{
+public class ProductModel 
+{
 
-// productID SERIAL PRIMARY KEY,
-public Guid ProductID {get;set;}=Guid.NewGuid();
+    public Guid ProductID { get; set; } = Guid.NewGuid();
 
-// productName VARCHAR(50) NOT NULL,
-public required string Productname {get;set;}
+    [Required(ErrorMessage = "Product name is required")]
+    [StringLength(50)]
+    public required string ProductName {get;set;}
+    
+    public string Description {get;set;}=string.Empty;
 
-[Required(ErrorMessage ="Productname is required")]
-[StringLength(50)]
+    [Required(ErrorMessage = "Quantity is required")]
+    public required int Quantity {get;set;}
 
-//   description TEXT,
-public string Description {get;set;}=string.Empty;
+    [Required(ErrorMessage = "Price is required")]
+    public required decimal Price {get;set;}
 
-// quantity INT NOT NULL,
-public required int Quantity {get;set;}
-
-//  price DECIMAL(10, 2) NOT NULL,
-public required decimal Price {get;set;}
-
-
-//  categoryID INT,
-public required Guid categoryID {get;set;}
-
-//  createdDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-public DateTime CreatedAt { get; set; } = DateTime.Now;
+    [Required(ErrorMessage = "CategoryId is required")]
+    public required Guid CategoryID {get;set;}
+    
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
 
 
 }

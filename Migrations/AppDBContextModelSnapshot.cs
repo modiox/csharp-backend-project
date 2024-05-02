@@ -32,7 +32,7 @@ namespace Backend.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("Name");
 
             modelBuilder.Entity("User", b =>
                 {
@@ -99,6 +99,6 @@ namespace Backend.Migrations
 
                 });
 #pragma warning restore 612, 618
-        }
+        });
     }
-}
+} }
