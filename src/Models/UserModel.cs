@@ -36,5 +36,5 @@ public class UserModel
     public bool IsAdmin { get; set; } = false; 
     public bool IsBanned { get; set; } = false; 
     public DateTime BirthDate { get; set; }
-   // public DateTime CreatedAt { get; set; } = DateTime.Now;
+   public DateTime CreatedAt { get; set; } = DateTime.UtcNow; // ! postgres accept DateTime.UtcNow not DateTime.Now
 }

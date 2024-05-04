@@ -22,5 +22,5 @@ public class Product
     [Required(ErrorMessage = "CategoryId is required")]
     public Guid CategoryId { get; set; }
 
-    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow; // ! postgres accept DateTime.UtcNow not DateTime.Now
 }

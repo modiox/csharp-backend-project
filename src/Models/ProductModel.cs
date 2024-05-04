@@ -20,7 +20,7 @@ public class ProductModel
     [Required(ErrorMessage = "CategoryId is required")]
     public required Guid CategoryID {get;set;}
     
-    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow; // ! postgres only accept UtcNOw
 
 
 }
