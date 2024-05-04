@@ -23,7 +23,8 @@ namespace EntityFramework
 
         [Required(ErrorMessage = "Payment method is required")]
         public required PaymentMethod Payment { get; set; } = PaymentMethod.CreditCard;
-        // public required string Payment { get; set; }
+        
+        public required double Amount { get; set; }
 
         [Required(ErrorMessage = "User Id is required")]
         public Guid UserId { get; set; }

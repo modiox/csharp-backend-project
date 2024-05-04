@@ -24,6 +24,7 @@ public class CustomerOrderService
             OrderId = row.OrderId,
             Status = row.Status,
             Payment = row.Payment,
+            Amount = row.Amount,
             ProductId = row.ProductId,
             UserId = row.UserId,
             // ! When we done from the product uncomment me 
@@ -55,24 +56,7 @@ public class CustomerOrderService
         ).ToList();
         return dataList.AsEnumerable();
     }
-  
-//     public static List<CustomerOrderModel> _customerOrders = new List<CustomerOrderModel>(){
-//             new CustomerOrderModel{
-//                 UserId = Guid.NewGuid(),
-//                 OrderStatus = Status.delivered,
-//                 Payment = new OrderPayment(PaymentMethod.CreditCard, 2000)
-//             },
-//             new CustomerOrderModel{
-//                 UserId = Guid.NewGuid(),
-//                 OrderStatus = Status.shipped,
-//                 Payment = new OrderPayment(PaymentMethod.Visa, 500)
-//             },
-//             new CustomerOrderModel{
-//                 UserId = Guid.NewGuid(),
-//                 OrderStatus = Status.processing,
-//                 Payment = new OrderPayment(PaymentMethod.Cash, 2000)
-//             }
-//         };
+
 
     // TODO : Fix it to return a single order with the user information
     public Task<CustomerOrder?> GetOrderById(Guid orderId)
@@ -90,6 +74,7 @@ public class CustomerOrderService
             OrderId = Guid.NewGuid(),
             Status = OrderStatus.Pending,
             Payment = newOrder.Payment,
+            Amount = newOrder.Amount,
             ProductId = newOrder.ProductId,
             UserId = newOrder.UserId
         };
@@ -132,5 +117,3 @@ public class CustomerOrderService
         return false;
     }
 }
-
-       
