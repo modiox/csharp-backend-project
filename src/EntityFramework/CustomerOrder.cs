@@ -37,6 +37,5 @@ namespace EntityFramework
         // [ForeignKey("UserId")]
         // public virtual List<Product>? Product { get; set; }
 
-
     }
 }

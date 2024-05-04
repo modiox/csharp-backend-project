@@ -11,7 +11,7 @@ using System.ComponentModel.DataAnnotations.Schema;
     public required string Name { get; set; } 
     public string Description { get; set; } = string.Empty;
     // public string Slug { get; set; }= string.Empty;
-    // public DateTime CreatedAt { get; set; }
+    // public DateTime CreatedAt { get; set; } // ! postgres accept DateTime.UtcNow not DateTime.Now
 
 }
 

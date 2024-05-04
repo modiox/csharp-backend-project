@@ -4,7 +4,8 @@ using Microsoft.Extensions.Options;
 using Npgsql.EntityFrameworkCore.PostgreSQL;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
-using api.Services;
+// using EntityFramework;
+// using api.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);

@@ -42,7 +42,7 @@ public class CategoryService
             Name = newCategory.Name,
             Description = newCategory.Description
             // newCategory.Slug = GenerateSlug(newCategory.Name);
-            // newCategory.CreatedAt = DateTime.Now;
+            // newCategory.CreatedAt = DateTime.Now; // ! postgres accept DateTime.UtcNow not DateTime.Now
         };
         _appDbContext.Categories.Add(category);// store this user in our database
         _appDbContext.SaveChanges();

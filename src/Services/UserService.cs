@@ -96,7 +96,7 @@ public class UserService
                 Password = newUser.Password,
                 FirstName = newUser.FirstName,
                 LastName = newUser.LastName,
-                CreatedAt = DateTime.Now,
+                CreatedAt = DateTime.UtcNow, // ! postgres accept DateTime.UtcNow not DateTime.Now
             };
 
             _dbContext.Users.Add(createUser);
