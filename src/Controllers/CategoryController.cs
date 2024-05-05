@@ -10,7 +10,6 @@ public class CategoryController : ControllerBase
         _categoryService = new CategoryService(appDbContext);
     }
 
-
     [HttpGet]
     public async Task<IActionResult> GetAllCategory()
     {
@@ -62,10 +61,15 @@ public class CategoryController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateCategory(CategoryModel newCategory)
     {
-        try
+      try
         {
-            await _categoryService.CreateCategoryService(newCategory);
-            return Ok("Category is Created successfully");
+           var result = await _categoryService.CreateCategoryService(newCategory);
+            if (!result)
+        {
+            return NotFound();
+        }
+        return Ok("Category is created successfully");
+            
         }
         catch (Exception e)
         {

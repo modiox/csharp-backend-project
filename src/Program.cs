@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using Npgsql.EntityFrameworkCore.PostgreSQL;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 // using EntityFramework;
 // using api.Services;
 
@@ -24,9 +25,12 @@ builder.Services.AddControllers();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<CustomerOrderService>();
 builder.Services.AddScoped<CategoryService>();
-//builder.Services.AddScoped<ProductService>(); // //Will uncomment once added 
+// builder.Services.AddScoped<ProductService>(); // //Will uncomment once added 
 
-
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+});
 
 
 var app = builder.Build();
