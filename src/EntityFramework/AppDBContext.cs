@@ -37,6 +37,9 @@ public class AppDBContext : DbContext
         .HasAnnotation("MaxLength", 32)
         .HasAnnotation("RegularExpression", @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,32}$");
         
+        modelBuilder.Entity<User>().Property(u => u.Email).IsRequired().HasAnnotation("MinLength", 5)
+        .HasAnnotation("MaxLength", 50)
+        .HasAnnotation("RegularExpression", @"^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$");
 
         modelBuilder.Entity<User>().Property(u => u.FirstName).IsRequired().HasMaxLength(20);
 
@@ -64,11 +67,13 @@ public class AppDBContext : DbContext
         modelBuilder.Entity<Category>().Property(c => c.Name).IsRequired().HasMaxLength(50);
         modelBuilder.Entity<Category>().HasIndex(c => c.Name).IsUnique();
 
+        modelBuilder.Entity<Category>().Property(c => c.Description).HasDefaultValue(string.Empty);
+
         // ### Relationship
-        // modelBuilder.Entity<Category>()
-        // .HasMany(c => c.Products)
-        // .WithOne(p => p.Category)
-        // .HasForeignKey(p => p.CategoryId);
+        modelBuilder.Entity<Category>()
+        .HasMany(c => c.Products)
+        .WithOne(p => p.Category)
+        .HasForeignKey(p => p.CategoryId);
 
         // --------------------Order--------------------
         modelBuilder.Entity<CustomerOrder>().HasKey(o => o.OrderId); //PK
