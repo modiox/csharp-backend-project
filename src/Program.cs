@@ -26,6 +26,7 @@ builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<CustomerOrderService>();
 builder.Services.AddScoped<CategoryService>();
 // builder.Services.AddScoped<ProductService>(); // //Will uncomment once added 
+builder.Services.AddScoped<CartService>();
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
@@ -44,4 +45,4 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.MapControllers();
-app.Run();
+app.Run("http://localhost:5343");

@@ -5,3 +5,4 @@ obj
 *.http
 Migrations
 appsettings.json 
+Backend.csproj

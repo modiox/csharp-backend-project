@@ -47,8 +47,7 @@ public class UserService
 
     public UserModel GetUserById(Guid userId)
     {
-        try
-        {
+        
             var userEntity = _dbContext.Users.FirstOrDefault(u => u.UserID == userId);
             if (userEntity != null)
             {
@@ -74,12 +73,12 @@ public class UserService
                 // Handle the case where the user is not found
                 return null; 
             }
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, $"Error occurred while retrieving user with ID: {userId}.");
-            throw;
-        }
+        
+        // catch (Exception ex)
+        // {
+        //     _logger.LogError(ex, $"Error occurred while retrieving user with ID: {userId}.");
+        //     throw;
+        // }
     }
 
 
