@@ -14,14 +14,14 @@ public class CartService
         _logger = logger;
     }
 
-        public async Task<List<CartModel>> GetCartItemsAsync(Guid userId)
+    public async Task<List<CartModel>> GetCartItemsAsync(Guid userId)
+    {
+        try
         {
-            try
-            {
-                var cartItems = await _dbContext.Carts
-                    .Where(c => c.UserID == userId)
-                    .Include(c => c.Product)
-                    .ToListAsync();
+            var cartItems = await _dbContext.Carts
+                .Where(c => c.UserID == userId)
+                .Include(c => c.Product)
+                .ToListAsync();
 
             // Map Cart entities to CartModel
             var cartModels = cartItems.Select(c => new CartModel
@@ -39,15 +39,15 @@ public class CartService
             }).ToList();
 
             return cartModels;
-            }
-            catch (Exception ex)
-            {
+        }
+        catch (Exception ex)
+        {
             _logger.LogError(ex, "An error occurred while performing cart operation.");
-            return null; 
+            return null;
 
         }
-        }
-    
+    }
+
 
     public async Task<bool> AddToCartAsync(Guid productId, Guid userId)
     {
@@ -102,7 +102,7 @@ public class CartService
         }
         catch (Exception ex)
         {
-             _logger.LogError(ex, "An error occurred while performing cart operation.");
+            _logger.LogError(ex, "An error occurred while performing cart operation.");
             return false;
         }
     }

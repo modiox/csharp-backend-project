@@ -19,6 +19,7 @@ public class AppDBContext : DbContext
     public DbSet<Category> Categories { get; set; }
     // public DbSet<OrderDetail> Orders {get; set; }
     public DbSet<CustomerOrder> CustomerOrders { get; set; }
+    public DbSet<Cart> Carts { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -32,7 +33,10 @@ public class AppDBContext : DbContext
         modelBuilder.Entity<User>().Property(u => u.Email).IsRequired().HasMaxLength(100);
         modelBuilder.Entity<User>().HasIndex(u => u.Email).IsUnique();
 
-        modelBuilder.Entity<User>().Property(u => u.Password).IsRequired().HasMaxLength(32);
+        modelBuilder.Entity<User>().Property(u => u.Password).IsRequired().HasAnnotation("MinLength", 8)
+        .HasAnnotation("MaxLength", 32)
+        .HasAnnotation("RegularExpression", @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,32}$");
+        
 
         modelBuilder.Entity<User>().Property(u => u.FirstName).IsRequired().HasMaxLength(20);
 
@@ -47,6 +51,11 @@ public class AppDBContext : DbContext
         // .HasMany(u => u.Orders)
         // .WithOne(o => o.User)
         // .HasForeignKey(o => o.UserId);
+
+        modelBuilder.Entity<User>()
+         .HasMany(u => u.Carts)    // Each User can have multiple Carts
+         .WithOne(c => c.User)     // Each Cart belongs to one User
+         .HasForeignKey(c => c.UserID);  // Foreign key in Cart table
 
         // --------------------Category--------------------
         modelBuilder.Entity<Category>().HasKey(c => c.CategoryID); //PK
@@ -84,6 +93,19 @@ public class AppDBContext : DbContext
         modelBuilder.Entity<Product>().Property(p => p.Quantity).IsRequired();
 
         modelBuilder.Entity<Product>().Property(p => p.Price).IsRequired();
+
+        //-------------Cart-------------------- 
+
+        modelBuilder.Entity<Cart>()
+        .HasKey(c => new { c.ProductID, c.UserID });
+
+        // Configure relationships and apply validations
+        modelBuilder.Entity<Cart>()
+        .HasOne(c => c.Product)
+        .WithMany() // Assuming a product can be in multiple carts
+        .HasForeignKey(c => c.ProductID)
+        .IsRequired();
+
 
     }
 
