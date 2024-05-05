@@ -26,16 +26,6 @@ namespace Controllers
             return Ok(orders);
         }
 
-        // [HttpGet("{orderId}")]
-        // public async Task<IActionResult> GetOrder(string orderId)
-        // {
-        //     if (!Guid.TryParse(orderId, out Guid orderIdGuid))
-        //     {
-        //         return BadRequest("Invalid user ID Format");
-        //     }
-        //     var order = await _customerOrderService.GetOrderById(orderIdGuid);
-        // }
-
         [HttpGet("{orderId}")]
         public IActionResult GetCustomerOrderById(string orderId)
         {
@@ -102,39 +92,6 @@ namespace Controllers
             return NoContent();
         }
     }
-    // ! this part it causing an error soo I left for you
-// }
 
-
-//             return Ok(order);
-//         }
-
-//         [HttpPost]
-//         public IActionResult CreateCustomerOrder(CustomerOrderModel newOrder)
-//         {
-//             var createdOrder = _customerOrderService.CreateCustomerOrderService(newOrder);
-//             return CreatedAtAction(nameof(GetCustomerOrderById), new { orderId = createdOrder.OrderId }, createdOrder);
-//         }
-
-//         [HttpPut("{orderId}")]
-//         public IActionResult UpdateCustomerOrder(string orderId, CustomerOrderModel updatedOrder)
-//         {
-//             if (!Guid.TryParse(orderId, out Guid orderIdGuid))
-//             {
-//                 return BadRequest("Invalid order ID Format");
-//             }
-
-//             var order = _customerOrderService.UpdateCustomerOrderService(orderIdGuid, updatedOrder);
-//             if (order == null)
-//             {
-//                 return NotFound();
-//             }
-
-//             return Ok(order);
-//         }
-
-   
-
-    // }
 }
 

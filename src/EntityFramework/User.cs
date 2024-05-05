@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using EntityFramework;
 
 
 [Table("Users")]
@@ -38,4 +39,7 @@ public class User
     public bool IsBanned { get; set; } = false;
     public DateTime? BirthDate { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow; // ! postgres accept DateTime.UtcNow not DateTime.Now
+
+    //Defined a list of Orders to make a relationship
+    // public List<CustomerOrder> Orders { get; set; }        
 }
