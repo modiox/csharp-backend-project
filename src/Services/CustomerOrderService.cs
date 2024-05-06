@@ -1,11 +1,6 @@
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using EntityFramework;
 using Microsoft.EntityFrameworkCore;
-
 
 public class CustomerOrderService
 {
@@ -15,59 +10,18 @@ public class CustomerOrderService
         _appDbContext = appDbContext;
     }
 
-    public async Task<IEnumerable<CustomerOrderModel>> GetAllOrdersService()
+    public async Task<List<CustomerOrder>> GetAllOrdersService()
     {
-        await Task.CompletedTask; // Simulate an asynchronous operation without delay
-        var dataList = _appDbContext.CustomerOrders.
-        Select(row => new CustomerOrderModel
-        {
-            OrderId = row.OrderId,
-            Status = row.Status,
-            Payment = row.Payment,
-            Amount = row.Amount,
-            ProductId = row.ProductId,
-            UserId = row.UserId,
-            // ! When we done from the product uncomment me 
-            // Product = _appDbContext.Products
-            // .Where(p => p.ProductId == row.ProductId)
-            // .Select(p => new ProductModel
-            // {
-            //     ProductName = p.ProductName,
-            //     Price = p.Price,
-            //     Quantity = p.Quantity,
-            //     // ShippingPrice = p.ShippingPrice,
-            //     CategoryID = p.CategoryID
-            // })
-            // .ToList(),
-            User = new UserModel
-            {
-                UserID = row.User.UserID,
-                Username = row.User.Username,
-                FirstName = row.User.FirstName,
-                LastName = row.User.LastName,
-                Email = row.User.Email,
-                Password = row.User.Password,
-                Address = row.User.Address,
-                IsAdmin = row.User.IsAdmin,
-                IsBanned = row.User.IsBanned,
-                // CreatedAt = row.User.CreatedAt,
-            }
-        }
-        ).ToList();
-        return dataList.AsEnumerable();
+        return await _appDbContext.CustomerOrders.Include(order => order.Products).ToListAsync();
     }
 
-
-    // TODO : Fix it to return a single order with the user information
-    public Task<CustomerOrder?> GetOrderById(Guid orderId)
+    public async Task<CustomerOrder?> GetOrderById(Guid orderId)
     {
-        return Task.FromResult(_appDbContext.CustomerOrders.Find(orderId));
+        return await _appDbContext.CustomerOrders.Include(o => o.Products).FirstOrDefaultAsync(o => o.OrderId == orderId);
     }
 
-    public async void CreateOrderService(CustomerOrderModel newOrder)
+    public async Task<Guid> CreateOrderService(CustomerOrderModel newOrder)
     {
-        await Task.CompletedTask; // Simulate an asynchronous operation without delay
-
         // Create record
         var order = new CustomerOrder
         {
@@ -75,14 +29,31 @@ public class CustomerOrderService
             Status = OrderStatus.Pending,
             Payment = newOrder.Payment,
             Amount = newOrder.Amount,
-            ProductId = newOrder.ProductId,
             UserId = newOrder.UserId
         };
 
         // Add the record to the context
-        _appDbContext.CustomerOrders.Add(order);
+        await _appDbContext.CustomerOrders.AddAsync(order);
         // Save to database
-        _appDbContext.SaveChanges();
+        await _appDbContext.SaveChangesAsync();
+
+        return order.OrderId;
+    }
+
+    public async Task AddProductToOrder(Guid orderId, Guid productId)
+    {
+        var order = await _appDbContext.CustomerOrders.Include(o => o.Products).FirstOrDefaultAsync(o => o.OrderId == orderId);
+        var product = await _appDbContext.Products.FindAsync(productId);
+
+        if (order != null && product != null && !order.Products.Contains(product))
+        {
+            order.Products.Add(product);
+            await _appDbContext.SaveChangesAsync();
+        }
+        else
+        {
+            throw new InvalidOperationException("This Product has already added to the Order");
+        }
     }
 
     public async Task<bool> UpdateOrderService(Guid orderId, CustomerOrderModel updateOrder)

@@ -21,9 +21,6 @@ public class UserService
     public async Task<List<User>> GetAllUsersAsync()
     {
         return await _dbContext.Users.Include(user => user.Orders).ToListAsync();
-
-        // With product we can uncomment after product finish and remove the line above
-        // return await _dbContext.Users.Include(u => u.Orders).ThenInclude(o => o.Products).ToListAsync();
     }
 
     public async Task<User?> GetUserById(Guid userId)

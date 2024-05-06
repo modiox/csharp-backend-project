@@ -3,9 +3,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EntityFramework
 {
-    public enum Status { pending, processing, shipped, delivered };
-    public enum Payment { CreditCard, ApplePay, Visa, Cash, PayPal };
-
     [Table("CustomerOrder")]
     public class CustomerOrder
     {
@@ -21,9 +18,7 @@ namespace EntityFramework
 
         public virtual User? User { get; set; }
 
-        public Guid ProductId { get; set; }
-
-        public virtual List<Product>? Product { get; set; }
+        public List<Product> Products { get; set; } = new List<Product>();
 
     }
 }

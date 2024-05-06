@@ -1,7 +1,3 @@
-
-using System.ComponentModel;
-using System.Net.Http.Headers;
-// using api.EntityFramework;
 using EntityFramework;
 using Microsoft.EntityFrameworkCore;
 public class AppDBContext : DbContext
@@ -9,16 +5,12 @@ public class AppDBContext : DbContext
     public AppDBContext(DbContextOptions options) : base(options) { }
 
     // DbSet properties for our entities
-    // ! it cause an error when I create appDbContext for customer order.
-    // ! The name what causing the error (CustomerOrders)
-    // public IEnumerable<object> CustomerOrders { get; internal set; }
 
     public DbSet<User> Users { get; set; }
     public DbSet<Product> Products{get;set;}
 
-    // public DbSet<Product>Products {get; set; }
     public DbSet<Category> Categories { get; set; }
-    // public DbSet<OrderDetail> Orders {get; set; }
+
     public DbSet<CustomerOrder> CustomerOrders { get; set; }
     public DbSet<Cart> Carts { get; set; }
 
@@ -85,10 +77,10 @@ public class AppDBContext : DbContext
         modelBuilder.Entity<CustomerOrder>().Property(o => o.Payment).IsRequired();
 
         // ### Relationship Many-To-Many
-        // modelBuilder.Entity<CustomerOrder>()
-        // .HasMany(o => o.Product)
-        // .WithOne(p => p.Order)
-        // .HasForeignKey(p => p.OrderId);
+        modelBuilder.Entity<CustomerOrder>()
+        .HasMany(o => o.Product)
+        .WithMany(p => p.Orders)
+        .UsingEntity(j => j.ToTable("OrderDetails"));
 
         // --------------------Product--------------------
         modelBuilder.Entity<Product>().HasKey(p => p.ProductID); //PK
