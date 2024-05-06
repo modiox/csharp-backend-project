@@ -53,4 +53,13 @@ public class ProductService
         }
         return false;
     }
+    public async Task<bool> DeleteProductService(Guid productId){
+        var productToRemove=await _appDbcontext.Products.FirstOrDefaultAsync(p=>p.ProductID==productId);
+        if(productToRemove !=null){
+            _appDbcontext.Products.Remove(productToRemove);
+            await _appDbcontext.SaveChangesAsync();
+            return true;
+        }
+        return false;
+    }
 }
