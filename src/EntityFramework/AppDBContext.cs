@@ -36,7 +36,7 @@ public class AppDBContext : DbContext
         modelBuilder.Entity<User>().Property(u => u.Password).IsRequired().HasAnnotation("MinLength", 8)
         .HasAnnotation("MaxLength", 32)
         .HasAnnotation("RegularExpression", @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,32}$");
-        
+
         modelBuilder.Entity<User>().Property(u => u.Email).IsRequired().HasAnnotation("MinLength", 5)
         .HasAnnotation("MaxLength", 50)
         .HasAnnotation("RegularExpression", @"^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$");
@@ -50,10 +50,10 @@ public class AppDBContext : DbContext
         modelBuilder.Entity<User>().Property(u => u.Address).HasMaxLength(255);
 
         // ### Relationship
-        // modelBuilder.Entity<User>()
-        // .HasMany(u => u.Orders)
-        // .WithOne(o => o.User)
-        // .HasForeignKey(o => o.UserId);
+        modelBuilder.Entity<User>()
+        .HasMany(u => u.Orders)
+        .WithOne(o => o.User)
+        .HasForeignKey(o => o.UserId);
 
         modelBuilder.Entity<User>()
          .HasMany(u => u.Carts)    // Each User can have multiple Carts
@@ -85,7 +85,7 @@ public class AppDBContext : DbContext
 
         // ### Relationship Many-To-Many
         // modelBuilder.Entity<CustomerOrder>()
-        // .HasMany(o => o.Products)
+        // .HasMany(o => o.Product)
         // .WithOne(p => p.Order)
         // .HasForeignKey(p => p.OrderId);
 
