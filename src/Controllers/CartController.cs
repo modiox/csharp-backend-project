@@ -1,5 +1,4 @@
-using System;
-using System.Threading.Tasks;
+using api.Controllers;
 using Microsoft.AspNetCore.Mvc;
 
 [Route("api/carts")]
@@ -20,11 +19,11 @@ public class CartController : ControllerBase
 
         if (cartItems != null)
         {
-            return Ok(cartItems);
+            return ApiResponse.Success(cartItems, "Cart returned");
         }
         else
         {
-            return BadRequest("Failed to fetch cart items.");
+            return ApiResponse.ServerError("Failed to fetch cart items.");
         }
     }
 
@@ -34,11 +33,11 @@ public class CartController : ControllerBase
     {
         if (await _cartService.AddToCartAsync(productId, userId))
         {
-            return Ok("Product added to cart successfully.");
+            return ApiResponse.Created("Product added to cart successfully.");
         }
         else
         {
-            return BadRequest("Failed to add product to cart.");
+            return ApiResponse.ServerError("Failed to add product to cart.");
         }
     }
 }

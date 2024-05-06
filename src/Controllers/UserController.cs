@@ -1,7 +1,5 @@
+using api.Controllers;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System;
-
 
 [ApiController]
 [Route("api/[controller]")]
@@ -9,12 +7,12 @@ public class UserController : ControllerBase
 {
     private readonly UserService _userService;
     private readonly ILogger<UserController> _logger;
-    private AppDBContext _appDbContext; 
+    private AppDBContext _appDbContext;
 
     public UserController(UserService userService, AppDBContext appDBContext, ILogger<UserController> logger)
     {
         _userService = userService ?? throw new ArgumentNullException(nameof(userService));
-        _logger = logger; 
+        _logger = logger;
         _appDbContext = appDBContext;
     }
 
@@ -24,33 +22,32 @@ public class UserController : ControllerBase
         try
         {
             var users = await _userService.GetAllUsersAsync();
-            return Ok(users);
+            return ApiResponse.Success(users, "Users Returned");
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred while retrieving all users.");
-            return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing the request.");
+            return ApiResponse.ServerError("An error occurred while processing the request.");
         }
     }
 
     [HttpGet("{userId}")]
-   public IActionResult GetUser(Guid userId)
-{
-    try
+    public IActionResult GetUser(Guid userId)
     {
-        var user = _userService.GetUserById(userId);
-        if (user == null)
+        try
         {
-            return NotFound();
+            var user = _userService.GetUserById(userId);
+            if (user == null)
+            {
+                return ApiResponse.NotFound("User not exist or you provide an invalid Id");
+            }
+            return Ok(user);
         }
-        return Ok(user);
+        catch
+        {
+            return ApiResponse.ServerError("An error occurred while processing the request.");
+        }
     }
-    catch 
-    {
-       
-        return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing the request.");
-    }
-}
 
 
     [HttpPost]
@@ -60,11 +57,13 @@ public class UserController : ControllerBase
         var success = _userService.CreateUser(newUser, out createdUser);
         if (success)
         {
-            return CreatedAtAction(nameof(GetUser), new { userId = createdUser.UserID }, createdUser);
+            // return CreatedAtAction(nameof(GetUser), new { userId = createdUser.UserID }, createdUser);
+            return ApiResponse.Created("User is created successfully");
         }
         else
         {
-            return StatusCode(500, "An error occurred while creating the user.");
+            // return StatusCode(500, "An error occurred while creating the user.");
+            return ApiResponse.ServerError("An error occurred while creating the user.");
         }
     }
 
@@ -75,9 +74,9 @@ public class UserController : ControllerBase
         var user = _userService.UpdateUser(userId, updateUser);
         if (user == null)
         {
-            return NotFound();
+            return ApiResponse.NotFound("User not exist or you provide an invalid Id");
         }
-        return Ok(user);
+        return ApiResponse.Updated("User is updated successfully");
     }
 
     [HttpDelete("{userId}")]
@@ -86,8 +85,8 @@ public class UserController : ControllerBase
         var result = _userService.DeleteUser(userId);
         if (!result)
         {
-            return NotFound();
+            return ApiResponse.NotFound("User not exist or you provide an invalid Id");
         }
-        return NoContent();
+        return ApiResponse.Deleted("User is deleted successfully");
     }
 }

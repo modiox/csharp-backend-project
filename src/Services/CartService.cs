@@ -1,8 +1,4 @@
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Mvc;
 public class CartService
 {
     private readonly AppDBContext _dbContext;
@@ -44,7 +40,6 @@ public class CartService
         {
             _logger.LogError(ex, "An error occurred while performing cart operation.");
             return null;
-
         }
     }
 
@@ -106,7 +101,4 @@ public class CartService
             return false;
         }
     }
-
-
-
 }

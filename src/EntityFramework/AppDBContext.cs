@@ -105,13 +105,11 @@ public class AppDBContext : DbContext
         .HasKey(c => new { c.ProductID, c.UserID });
 
         // Configure relationships and apply validations
-        modelBuilder.Entity<Cart>()
-        .HasOne(c => c.Product)
-        .WithMany() // Assuming a product can be in multiple carts
-        .HasForeignKey(c => c.ProductID)
-        .IsRequired();
-
-
+        // modelBuilder.Entity<Cart>()
+        // .HasOne(c => c.Product)
+        // .WithMany() // Assuming a product can be in multiple carts
+        // .HasForeignKey(c => c.ProductID)
+        // .IsRequired();
     }
 
 }

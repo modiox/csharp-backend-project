@@ -1,5 +1,3 @@
-
-
 using Microsoft.EntityFrameworkCore;
 
 public class CategoryService
@@ -34,7 +32,6 @@ public class CategoryService
         await _appDbContext.Categories.AddAsync(category);// store this user in our database
         await _appDbContext.SaveChangesAsync();
         return true;
-
     }
 
     public async Task<bool> UpdateCategoryService(Guid categoryId, CategoryModel updateCategory)
@@ -50,6 +47,7 @@ public class CategoryService
         return false;
 
     }
+
     public async Task<bool> DeleteCategoryService(Guid categoryId)
     {
         var categoryToRemove = await _appDbContext.Categories.FirstOrDefaultAsync(c => c.CategoryID == categoryId);
@@ -61,6 +59,4 @@ public class CategoryService
         }
         return false;
     }
-
-
 }
