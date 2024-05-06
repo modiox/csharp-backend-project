@@ -18,117 +18,41 @@ public class UserService
         _logger = logger;
     }
 
-   
-
-    public async Task<IEnumerable<UserModel>> GetAllUsersAsync()
+    public async Task<List<User>> GetAllUsersAsync()
     {
-        // Retrieve users asynchronously
-        var dataList = await _dbContext.Users.ToListAsync();
+        return await _dbContext.Users.Include(user => user.Orders).ToListAsync();
 
-        // Map data to UserModel
-        var users = dataList.Select(row => new UserModel
-        {
-            UserID = row.UserID,
-            Username = row.Username,
-            Email = row.Email,
-            Password = row.Password,
-            FirstName = row.FirstName,
-            LastName = row.LastName,
-            PhoneNumber = row.PhoneNumber,
-            Address = row.Address,
-            IsAdmin = row.IsAdmin,
-            IsBanned = row.IsBanned,
-            BirthDate = row.BirthDate ?? DateTime.MinValue,
-        
-        }).ToList();
-
-        return users;
+        // With product we can uncomment after product finish and remove the line above
+        // return await _dbContext.Users.Include(u => u.Orders).ThenInclude(o => o.Products).ToListAsync();
     }
 
-    public UserModel GetUserById(Guid userId)
+    public async Task<User?> GetUserById(Guid userId)
     {
-        try
-        {
-            var userEntity = _dbContext.Users.FirstOrDefault(u => u.UserID == userId);
-            if (userEntity != null)
-            {
-                var userModel = new UserModel
-                {
-                    UserID = userEntity.UserID,
-                    Username = userEntity.Username,
-                    Email = userEntity.Email,
-                    Password = userEntity.Password,
-                    FirstName = userEntity.FirstName,
-                    LastName = userEntity.LastName,
-                    PhoneNumber = userEntity.PhoneNumber,
-                    Address = userEntity.Address,
-                    IsAdmin = userEntity.IsAdmin,
-                    IsBanned = userEntity.IsBanned,
-                    BirthDate = userEntity.BirthDate ?? DateTime.MinValue,
-    
-                };
-                return userModel;
-            }
-            else
-            {
-                // Handle the case where the user is not found
-                return null; 
-            }
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, $"Error occurred while retrieving user with ID: {userId}.");
-            throw;
-        }
+        return await _dbContext.Users.Include(u => u.Orders).FirstOrDefaultAsync(u => u.UserID == userId);
     }
 
-
-
-    public bool CreateUser(UserModel newUser, out UserModel createdUser)
+    public async Task<User> CreateUser(UserModel newUser)
     {
         try
         {
             User createUser = new User
             {
-                UserID = Guid.NewGuid(),
                 Username = newUser.Username,
                 Email = newUser.Email,
                 Password = newUser.Password,
                 FirstName = newUser.FirstName,
                 LastName = newUser.LastName,
-                CreatedAt = DateTime.UtcNow, // ! postgres accept DateTime.UtcNow not DateTime.Now
+                CreatedAt = DateTime.UtcNow,
+                Address = newUser.Address,
+                IsAdmin = newUser.IsAdmin,
+                IsBanned = false
             };
 
             _dbContext.Users.Add(createUser);
 
-            // Save changes to the database
-            int result = _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
 
-            if (result > 0)
-            {
-                // Operation successful, return the newly created user
-                createdUser = new UserModel
-                {
-                    UserID = createUser.UserID,
-                    Username = createUser.Username,
-                    Email = createUser.Email,
-                    Password = createUser.Password,
-                    FirstName = createUser.FirstName,
-                    LastName = createUser.LastName,
-                    PhoneNumber = createUser.PhoneNumber,
-                    Address = createUser.Address,
-                    IsAdmin = createUser.IsAdmin,
-                    IsBanned = createUser.IsBanned,
-                    BirthDate = createUser.BirthDate ?? DateTime.MinValue,
-
-                };
-                return true;
-            }
-            else
-            {
-                createdUser = null;
-                return false;
-            }
+            return createUser;
         }
         catch (Exception ex)
         {
@@ -137,7 +61,7 @@ public class UserService
         }
     }
 
-    public bool UpdateUser(Guid userId, UserModel updateUser)
+    public async Task<bool> UpdateUser(Guid userId, UserModel updateUser)
     {
         try
         {
@@ -146,11 +70,13 @@ public class UserService
             {
                 existingUser.Username = updateUser.Username;
                 existingUser.Email = updateUser.Email;
-                existingUser.Password = updateUser.Password;
                 existingUser.FirstName = updateUser.FirstName;
                 existingUser.LastName = updateUser.LastName;
+                existingUser.Address = updateUser.Address;
+                existingUser.PhoneNumber = updateUser.PhoneNumber;
+                existingUser.IsBanned = updateUser.IsBanned;
 
-                _dbContext.SaveChanges();
+                await _dbContext.SaveChangesAsync();
                 return true; // Return true indicating successful update
             }
 
@@ -164,18 +90,18 @@ public class UserService
     }
 
 
-    public bool DeleteUser(Guid userId)
+    public async Task<bool> DeleteUser(Guid userId)
     {
 
         var userToDelete = _dbContext.Users.FirstOrDefault(u => u.UserID == userId);
         if (userToDelete != null)
         {
             _dbContext.Users.Remove(userToDelete);
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
             return true;
         }
         return false;
     }
 
-   
+
 }
