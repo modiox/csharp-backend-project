@@ -28,6 +28,7 @@ public class UserService
 
     public async Task<User?> GetUserById(Guid userId)
     {
+
         return await _dbContext.Users.Include(u => u.Orders).FirstOrDefaultAsync(u => u.UserID == userId);
     }
 

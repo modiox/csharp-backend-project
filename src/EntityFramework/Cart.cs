@@ -9,7 +9,9 @@ using System.ComponentModel.DataAnnotations.Schema;
         [Required(ErrorMessage = "User Id is required")]
         public Guid UserID { get; set; }
 
+
         public Product Product { get; set; }
+
        
         public User User { get; set; }
     }
