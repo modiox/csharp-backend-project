@@ -2,7 +2,7 @@ using api.Controllers;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/user")]
 public class UserController : ControllerBase
 {
     private readonly UserService _userService;
@@ -41,7 +41,7 @@ public class UserController : ControllerBase
             {
                 return ApiResponse.NotFound("User not exist or you provide an invalid Id");
             }
-            return Ok(user);
+            return ApiResponse.Success(user, "User Returned");
         }
         catch
         {
@@ -51,11 +51,10 @@ public class UserController : ControllerBase
 
 
     [HttpPost]
-    public IActionResult CreateUser(UserModel newUser)
+    public async Task<IActionResult> CreateUser(UserModel newUser)
     {
-        UserModel createdUser;
-        var success = _userService.CreateUser(newUser, out createdUser);
-        if (success)
+        var createdUser = await _userService.CreateUser(newUser);
+        if (createdUser != null)
         {
             // return CreatedAtAction(nameof(GetUser), new { userId = createdUser.UserID }, createdUser);
             return ApiResponse.Created("User is created successfully");
@@ -69,10 +68,10 @@ public class UserController : ControllerBase
 
 
     [HttpPut("{userId}")]
-    public IActionResult UpdateUser(Guid userId, UserModel updateUser)
+    public async Task<IActionResult> UpdateUser(Guid userId, UserModel updateUser)
     {
-        var user = _userService.UpdateUser(userId, updateUser);
-        if (user == null)
+        var user = await _userService.UpdateUser(userId, updateUser);
+        if (user)
         {
             return ApiResponse.NotFound("User not exist or you provide an invalid Id");
         }
@@ -80,10 +79,10 @@ public class UserController : ControllerBase
     }
 
     [HttpDelete("{userId}")]
-    public IActionResult DeleteUser(Guid userId)
+    public async Task<IActionResult> DeleteUser(Guid userId)
     {
-        var result = _userService.DeleteUser(userId);
-        if (!result)
+        var result = await _userService.DeleteUser(userId);
+        if (result)
         {
             return ApiResponse.NotFound("User not exist or you provide an invalid Id");
         }
