@@ -26,5 +26,5 @@ public class Product
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow; // ! postgres accept DateTime.UtcNow not DateTime.Now
 
-    public List<Cart> Carts { get; set; }
+    public List<Cart>? Carts { get; set; }
 }

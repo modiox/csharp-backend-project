@@ -14,6 +14,7 @@ public class AppDBContext : DbContext
     // public IEnumerable<object> CustomerOrders { get; internal set; }
 
     public DbSet<User> Users { get; set; }
+    public DbSet<Product> Products{get;set;}
 
     // public DbSet<Product>Products {get; set; }
     public DbSet<Category> Categories { get; set; }
@@ -94,10 +95,13 @@ public class AppDBContext : DbContext
         modelBuilder.Entity<Product>().Property(p => p.ProductID).IsRequired().ValueGeneratedOnAdd();
 
         modelBuilder.Entity<Product>().Property(p => p.ProductName).IsRequired().HasMaxLength(50);
+        modelBuilder.Entity<Product>().Property(c=>c.Description).HasDefaultValue(string.Empty);
 
         modelBuilder.Entity<Product>().Property(p => p.Quantity).IsRequired();
 
         modelBuilder.Entity<Product>().Property(p => p.Price).IsRequired();
+        modelBuilder.Entity<Product>().Property(c=>c.CreatedAt).HasDefaultValue(DateTime.UtcNow);
+        
 
         //-------------Cart-------------------- 
 
