@@ -1,7 +1,3 @@
-
-using EntityFramework;
-// using api.Models;
-// using api.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Controllers
