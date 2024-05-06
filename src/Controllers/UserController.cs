@@ -4,7 +4,7 @@ using System;
 
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/user")]
 public class UserController : ControllerBase
 {
     private readonly UserService _userService;
@@ -34,11 +34,11 @@ public class UserController : ControllerBase
     }
 
     [HttpGet("{userId}")]
-   public IActionResult GetUser(Guid userId)
+   public async Task<IActionResult> GetUser(Guid userId)
 {
     try
     {
-        var user = _userService.GetUserById(userId);
+        var user = await _userService.GetUserById(userId);
         if (user == null)
         {
             return NotFound();
@@ -54,11 +54,10 @@ public class UserController : ControllerBase
 
 
     [HttpPost]
-    public IActionResult CreateUser(UserModel newUser)
+    public async Task<IActionResult> CreateUser(UserModel newUser)
     {
-        UserModel createdUser;
-        var success = _userService.CreateUser(newUser, out createdUser);
-        if (success)
+        var createdUser = await _userService.CreateUser(newUser);
+        if (createdUser != null)
         {
             return CreatedAtAction(nameof(GetUser), new { userId = createdUser.UserID }, createdUser);
         }
@@ -70,24 +69,24 @@ public class UserController : ControllerBase
 
 
     [HttpPut("{userId}")]
-    public IActionResult UpdateUser(Guid userId, UserModel updateUser)
+    public async Task<IActionResult> UpdateUser(Guid userId, UserModel updateUser)
     {
-        var user = _userService.UpdateUser(userId, updateUser);
-        if (user == null)
+        var user = await _userService.UpdateUser(userId, updateUser);
+        if (user)
         {
-            return NotFound();
+            return Ok(user);
         }
-        return Ok(user);
+            return NotFound();
     }
 
     [HttpDelete("{userId}")]
-    public IActionResult DeleteUser(Guid userId)
+    public async Task<IActionResult> DeleteUser(Guid userId)
     {
-        var result = _userService.DeleteUser(userId);
-        if (!result)
+        var result = await _userService.DeleteUser(userId);
+        if (result)
         {
-            return NotFound();
+            return NoContent();
         }
-        return NoContent();
+            return NotFound();
     }
 }
