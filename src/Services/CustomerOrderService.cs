@@ -64,7 +64,6 @@ public class CustomerOrderService
 
     public async Task<bool> UpdateOrderService(Guid orderId, CustomerOrderModel updateOrder)
     {
-        await Task.CompletedTask;
         var existingOrder = _appDbContext.CustomerOrders.FirstOrDefault(o => o.OrderId == orderId);
         if (existingOrder != null)
         {
@@ -73,7 +72,7 @@ public class CustomerOrderService
             // Add the record to the context
             _appDbContext.CustomerOrders.Update(existingOrder);
             // Save to database
-            _appDbContext.SaveChanges();
+            await _appDbContext.SaveChangesAsync();
             return true;
         }
         return false;
@@ -81,14 +80,13 @@ public class CustomerOrderService
 
     public async Task<bool> DeleteOrderService(Guid orderId)
     {
-        await Task.CompletedTask; // Simulate an asynchronous operation without delay
         var orderToRemove = _appDbContext.CustomerOrders.FirstOrDefault(order => order.OrderId == orderId);
         if (orderToRemove != null)
         {
             // Use context to remove
             _appDbContext.CustomerOrders.Remove(orderToRemove);
             // Save to database
-            _appDbContext.SaveChanges();
+            await _appDbContext.SaveChangesAsync();
             return true;
         }
         return false;
