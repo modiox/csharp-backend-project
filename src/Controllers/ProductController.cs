@@ -31,7 +31,7 @@ public class ProductController:ControllerBase{
             return StatusCode(500,e.Message);
         }
     }
-    [HttpGet("{productId:guid}")]
+    [HttpGet("{productId}")]
     public async Task<ActionResult>GetUser(string productId){
         try{
             if(!Guid.TryParse(productId,out Guid productIdGuid)){
@@ -42,7 +42,7 @@ public class ProductController:ControllerBase{
                 return NotFound(new{success=false,message="No product Found"});
 
             }else{
-                return Ok (new {success=true,message="single product is returned successfully"});
+                return Ok (new {success=true,message="single product is returned successfully",data=product});
             }
         }catch(Exception e){
             Console.WriteLine("$An error occurred here we tried get the category");
@@ -50,15 +50,17 @@ public class ProductController:ControllerBase{
         }
     }
     [HttpPost]
+    
     public async Task<IActionResult> AddProduct(ProductModel newProduct)
     {
         try
         {
             var response =await _productService.AddProductAsync(newProduct);
-            return Ok(response);
+
+            return ApiResponse.Created(response);
         }catch(Exception ex){
             Console.WriteLine("Hey error is here!!");
-            return StatusCode(500,ex.Message);
+            return ApiResponse.ServerError(ex.Message);
            
         }
     }
