@@ -42,7 +42,9 @@ public class ProductController:ControllerBase{
                 return NotFound(new{success=false,message="No product Found"});
 
             }else{
+
                 return Ok (new {success=true,message="single product is returned successfully",data=product});
+
             }
         }catch(Exception e){
             Console.WriteLine("$An error occurred here we tried get the category");
@@ -80,7 +82,7 @@ public class ProductController:ControllerBase{
         if(!Guid.TryParse(productId,out Guid productIdGuid)){
             return BadRequest("Invalid product ID format");
         }
-        var result =await _productService.DeleteProductService(productIdGuid);
+        var result = await _productService.DeleteProductService(productIdGuid);
         if(!result){
             return NotFound();
         }

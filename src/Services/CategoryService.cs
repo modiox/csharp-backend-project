@@ -23,7 +23,8 @@ public class CategoryService
         Category category = new Category
         {
             Name = newCategory.Name,
-            Description = newCategory.Description
+            Description = newCategory.Description,
+            CreatedAt = DateTime.UtcNow
         };
 
         await _appDbContext.Categories.AddAsync(category);
