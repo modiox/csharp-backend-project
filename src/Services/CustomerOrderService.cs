@@ -53,9 +53,7 @@ public class CustomerOrderService
             }
 
             order.Products.Add(product);
-
-            // product.Quantity -= 1;  // Doesn't work ##### Check it 
-
+            product.Quantity--;
             await _appDbContext.SaveChangesAsync();
         }
         else
@@ -80,7 +78,7 @@ public class CustomerOrderService
         }
         return false;
     }
-    
+
     public async Task<bool> DeleteOrderService(Guid orderId)
     {
         await Task.CompletedTask; // Simulate an asynchronous operation without delay
