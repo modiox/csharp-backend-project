@@ -1,11 +1,4 @@
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Update.Internal;
-using Microsoft.Extensions.Configuration.UserSecrets;
-using Microsoft.Extensions.Logging;
 
 public class UserService
 {
