@@ -7,7 +7,7 @@ public class AppDBContext : DbContext
     // DbSet properties for our entities
 
     public DbSet<User> Users { get; set; }
-    public DbSet<Product> Products{get;set;}
+    public DbSet<Product> Products { get; set; }
 
     public DbSet<Category> Categories { get; set; }
 
@@ -78,7 +78,7 @@ public class AppDBContext : DbContext
 
         // ### Relationship Many-To-Many
         modelBuilder.Entity<CustomerOrder>()
-        .HasMany(o => o.Product)
+        .HasMany(o => o.Products)
         .WithMany(p => p.Orders)
         .UsingEntity(j => j.ToTable("OrderDetails"));
 
@@ -87,13 +87,13 @@ public class AppDBContext : DbContext
         modelBuilder.Entity<Product>().Property(p => p.ProductID).IsRequired().ValueGeneratedOnAdd();
 
         modelBuilder.Entity<Product>().Property(p => p.ProductName).IsRequired().HasMaxLength(50);
-        modelBuilder.Entity<Product>().Property(c=>c.Description).HasDefaultValue(string.Empty);
+        modelBuilder.Entity<Product>().Property(c => c.Description).HasDefaultValue(string.Empty);
 
         modelBuilder.Entity<Product>().Property(p => p.Quantity).IsRequired();
 
         modelBuilder.Entity<Product>().Property(p => p.Price).IsRequired();
-        modelBuilder.Entity<Product>().Property(c=>c.CreatedAt).HasDefaultValue(DateTime.UtcNow);
-        
+        modelBuilder.Entity<Product>().Property(c => c.CreatedAt).HasDefaultValue(DateTime.UtcNow);
+
 
         //-------------Cart-------------------- 
 

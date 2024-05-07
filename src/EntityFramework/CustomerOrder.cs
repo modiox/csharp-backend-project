@@ -18,6 +18,8 @@ namespace EntityFramework
 
         public virtual User? User { get; set; }
 
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
         public List<Product> Products { get; set; } = new List<Product>();
 
     }
