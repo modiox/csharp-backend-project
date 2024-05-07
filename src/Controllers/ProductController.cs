@@ -42,7 +42,7 @@ public class ProductController:ControllerBase{
                 return NotFound(new{success=false,message="No product Found"});
 
             }else{
-                return Ok (new {success=true,message="single product is returned successfully"});
+                return Ok(new {success=true,message="single product is returned successfully"});
             }
         }catch(Exception e){
             Console.WriteLine("$An error occurred here we tried get the category");

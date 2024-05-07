@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 public class CategoryModel
 {
     public Guid CategoryID { get; set; }

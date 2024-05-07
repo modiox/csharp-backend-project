@@ -22,7 +22,7 @@ public class UserController : ControllerBase
         try
         {
             var users = await _userService.GetAllUsersAsync();
-            return ApiResponse.Success(users, "Users Returned");
+            return ApiResponse.Success(users, "all users are returned successfully");
         }
         catch (Exception ex)
         {
