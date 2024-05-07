@@ -1,8 +1,3 @@
-
-using Microsoft.AspNetCore.Routing.Constraints;
-using Microsoft.Extensions.Options;
-using Npgsql.EntityFrameworkCore.PostgreSQL;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -10,8 +5,6 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
 using api.Services;
-// using EntityFramework;
-// using api.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);
