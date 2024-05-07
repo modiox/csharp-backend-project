@@ -1,24 +1,38 @@
+using Dtos.Pagination;
 using Microsoft.EntityFrameworkCore;
 public class ProductService
 {
-
-    private readonly AppDBContext _appDbcontext;
+    private readonly AppDBContext _appDbContext;
     public ProductService(AppDBContext appDBContext)
     {
-        _appDbcontext = appDBContext;
-
-
+        _appDbContext = appDBContext;
     }
-    public async Task<IEnumerable<Product>> GetAllProductService()
+
+    public async Task<PaginationResult<Product>> GetAllProductService(int pageNumber, int pageSize)
     {
-        return await _appDbcontext.Products.Include(p => p.Category).ToListAsync();
+        var totalCount = _appDbContext.Products.Count();
+        var totalPages = (int)Math.Ceiling((decimal)totalCount / pageSize);
+        var page = await _appDbContext.Products
+            .OrderByDescending(b => b.CreatedAt)
+            .ThenByDescending(b => b.ProductID)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
 
+        return new PaginationResult<Product>
+        {
+            Items = page,
+            TotalCount = totalCount,
+            PageNumber = pageNumber,
+            PageSize = pageSize,
+        };
     }
+
     public async Task<Product?> GetProductById(Guid productId)
     {
-        return await _appDbcontext.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.ProductID == productId);
-
+        return await _appDbContext.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.ProductID == productId);
     }
+
     public async Task<Guid> AddProductAsync(ProductModel newProduct)
     {
         Product product = new Product
@@ -33,31 +47,34 @@ public class ProductService
             CreatedAt = DateTime.UtcNow
 
         };
-        await _appDbcontext.Products.AddAsync(product);
-        await _appDbcontext.SaveChangesAsync();
+        await _appDbContext.Products.AddAsync(product);
+        await _appDbContext.SaveChangesAsync();
         return product.ProductID;
     }
-    public async Task<bool> UpdateProductService(Guid productId, ProductModel updateproduct)
+
+    public async Task<bool> UpdateProductService(Guid productId, ProductModel updateProduct)
     {
-        var existingProduct = await _appDbcontext.Products.FirstOrDefaultAsync(p => p.ProductID == productId);
+        var existingProduct = await _appDbContext.Products.FirstOrDefaultAsync(p => p.ProductID == productId);
         if (existingProduct != null)
         {
-            existingProduct.ProductName = updateproduct.ProductName;
-            existingProduct.Description = updateproduct.Description;
-            existingProduct.Quantity = updateproduct.Quantity;
-            existingProduct.Price = updateproduct.Price;
-            existingProduct.CategoryId = updateproduct.CategoryID;
-            await _appDbcontext.SaveChangesAsync();
+            existingProduct.ProductName = updateProduct.ProductName;
+            existingProduct.Description = updateProduct.Description;
+            existingProduct.Quantity = updateProduct.Quantity;
+            existingProduct.Price = updateProduct.Price;
+            existingProduct.CategoryId = updateProduct.CategoryID;
+            await _appDbContext.SaveChangesAsync();
             return true;
-
         }
         return false;
     }
-    public async Task<bool> DeleteProductService(Guid productId){
-        var productToRemove=await _appDbcontext.Products.FirstOrDefaultAsync(p=>p.ProductID==productId);
-        if(productToRemove !=null){
-            _appDbcontext.Products.Remove(productToRemove);
-            await _appDbcontext.SaveChangesAsync();
+
+    public async Task<bool> DeleteProductService(Guid productId)
+    {
+        var productToRemove = await _appDbContext.Products.FirstOrDefaultAsync(p => p.ProductID == productId);
+        if (productToRemove != null)
+        {
+            _appDbContext.Products.Remove(productToRemove);
+            await _appDbContext.SaveChangesAsync();
             return true;
         }
         return false;
