@@ -1,7 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Dtos.User;
 using Microsoft.IdentityModel.Tokens;
 
 namespace api.Services
@@ -16,7 +15,7 @@ namespace api.Services
             Console.WriteLine($"{_configuration["Jwt:Issuer"]}");
         }
 
-        public string GenerateJwt(UserDto user)
+        public string GenerateJwt(User user)
         {
 
             var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]);
@@ -24,7 +23,7 @@ namespace api.Services
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[] {
-                new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
+                new Claim(ClaimTypes.NameIdentifier, user.UserID.ToString()),
                 new Claim(ClaimTypes.Role, user.IsAdmin? "Admin" : "User"),
             }),
 
