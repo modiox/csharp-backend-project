@@ -78,7 +78,7 @@ public class ProductController:ControllerBase{
         if(!Guid.TryParse(productId,out Guid productIdGuid)){
             return BadRequest("Invalid product ID format");
         }
-        var result =await _productService.DeleteProductService(productIdGuid);
+        var result = await _productService.DeleteProductService(productIdGuid);
         if(!result){
             return NotFound();
         }
