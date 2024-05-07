@@ -81,4 +81,28 @@ public class ProductController:ControllerBase{
         }
         return ApiResponse.Deleted("product is Deleted successfully");
     }
+
+    [HttpGet("search")]
+    public async Task<IActionResult> SearchProducts(string keyword, int page = 1, int pageSize = 10)
+    {
+        try
+        {
+            var products = await _productService.SearchProductsAsync(keyword, page, pageSize);
+            if (products.Any())
+            {
+                return Ok(products);
+            }
+            else
+            {
+                return ApiResponse.NotFound("No products found matching the search keyword");
+            }
+        }
+        catch (Exception)
+        {
+            return ApiResponse.ServerError();
+        }
+    }
+
+
+
 }

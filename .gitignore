@@ -6,3 +6,4 @@ obj
 Migrations
 appsettings.json 
 Backend.csproj
+*.csproj

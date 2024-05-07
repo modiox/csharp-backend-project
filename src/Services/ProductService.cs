@@ -80,4 +80,17 @@ public class ProductService
         }
         return false;
     }
+
+    //Search service 
+
+
+
+    public async Task<IEnumerable<Product>> SearchProductsAsync(string searchKeyword, int page, int pageSize)
+    {
+        return await _appDbContext.Products
+            .Where(p => p.ProductName.Contains(searchKeyword))
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+    }
 }
