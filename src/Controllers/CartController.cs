@@ -28,7 +28,7 @@ public class CartController : ControllerBase
     }
 
 
-    [HttpPost("add")]
+    [HttpPost]
     public async Task<IActionResult> AddToCart(Guid productId, Guid userId)
     {
         if (await _cartService.AddToCartAsync(productId, userId))

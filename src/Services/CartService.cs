@@ -10,7 +10,7 @@ public class CartService
         _logger = logger;
     }
 
-    public async Task<List<CartModel>> GetCartItemsAsync(Guid userId)
+    public async Task<List<CartModel>?> GetCartItemsAsync(Guid userId)
     {
         try
         {
@@ -39,7 +39,7 @@ public class CartService
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred while performing cart operation.");
-            return null;
+            throw;
         }
     }
 
@@ -72,7 +72,7 @@ public class CartService
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred while performing cart operation.");
-            return false;
+            throw;
         }
     }
 
@@ -98,7 +98,7 @@ public class CartService
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred while performing cart operation.");
-            return false;
+            throw;
         }
     }
 }
