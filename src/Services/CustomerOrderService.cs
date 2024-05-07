@@ -45,9 +45,17 @@ public class CustomerOrderService
         var order = await _appDbContext.CustomerOrders.Include(o => o.Products).FirstOrDefaultAsync(o => o.OrderId == orderId);
         var product = await _appDbContext.Products.FindAsync(productId);
 
-        if (order != null && product != null && !order.Products.Contains(product))
+        if (order != null && product != null)
         {
+            if (product.Quantity == 0)
+            {
+                throw new InvalidOperationException("This product is unavailable");
+            }
+
             order.Products.Add(product);
+
+            // product.Quantity -= 1;  // Doesn't work ##### Check it 
+
             await _appDbContext.SaveChangesAsync();
         }
         else
