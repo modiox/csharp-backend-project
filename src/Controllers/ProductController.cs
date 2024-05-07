@@ -27,7 +27,7 @@ public class ProductController:ControllerBase{
     }
 
     [HttpGet("{productId}")]
-    public async Task<IActionResult>GetUser(string productId){
+    public async Task<IActionResult>GetProductById(string productId){
         try{
             if(!Guid.TryParse(productId,out Guid productIdGuid)){
                 return ApiResponse.BadRequest("Invalid product ID format");
@@ -102,7 +102,4 @@ public class ProductController:ControllerBase{
             return ApiResponse.ServerError();
         }
     }
-
-
-
 }

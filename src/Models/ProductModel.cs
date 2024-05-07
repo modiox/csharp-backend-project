@@ -19,7 +19,7 @@ public class ProductModel
 
     [Required(ErrorMessage = "CategoryId is required")]
     public required Guid CategoryID {get;set;}
-    public CategoryModel Category { get; set; }
+    public CategoryModel? Category { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
 
