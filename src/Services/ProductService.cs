@@ -17,6 +17,7 @@ public class ProductService
             .ThenByDescending(b => b.ProductID)
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
+            .Include(p => p.Category)
             .ToListAsync();
 
         return new PaginationResult<Product>
