@@ -19,7 +19,7 @@ public class CustomerOrderModel
   [Required(ErrorMessage = "Product Id is required")]
   public required Guid ProductId { get; set; }
 
-  public virtual List<ProductModel>? Product { get; set; }
+  public List<ProductModel> Product { get; set; } = new List<ProductModel>();
 
   [Required(ErrorMessage = "User Id is required")]
   public Guid UserId { get; set; }

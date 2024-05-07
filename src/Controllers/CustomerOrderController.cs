@@ -23,34 +23,44 @@ namespace Controllers
         }
 
         [HttpGet("{orderId}")]
-        public IActionResult GetCustomerOrderById(string orderId)
+        public async Task<IActionResult> GetCustomerOrderById(string orderId)
         {
             if (!Guid.TryParse(orderId, out Guid orderIdGuid))
             {
                 return BadRequest("Invalid customer order ID Format");
             }
-            // ! it just the name of service, actually you can chose what ever you want.
-            // var order = _customerOrderService.GetCustomerOrderByIdService(orderIdGuid);
-            var order = _customerOrderService.GetOrderById(orderIdGuid);
+
+            var order = await _customerOrderService.GetOrderById(orderIdGuid);
 
             if (order == null)
             {
                 return NotFound();
             }
 
-            else
-            {
-                return Ok(order);
-            }
+            return Ok(order);
         }
 
         [HttpPost]
-        public IActionResult CreateOrder(CustomerOrderModel newOrder)
+        public async Task<IActionResult> CreateOrder(CustomerOrderModel newOrder)
         {
             try
             {
-                _customerOrderService.CreateOrderService(newOrder);
+                await _customerOrderService.CreateOrderService(newOrder);
                 return StatusCode(201, "Order added");
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpPost("{orderId}")]
+        public async Task<IActionResult> AddProductToOrder(Guid orderId, Guid productId)
+        {
+            try
+            {
+                await _customerOrderService.AddProductToOrder(orderId, productId);
+                return Ok();
             }
             catch (Exception e)
             {
@@ -66,11 +76,11 @@ namespace Controllers
                 return BadRequest("Invalid user ID Format");
             }
             var result = await _customerOrderService.UpdateOrderService(orderIdGuid, updateOrder);
-            if (!result)
+            if (result)
             {
-                return NotFound();
+                return Ok();
             }
-            return Ok();
+            return NotFound();
         }
 
         [HttpDelete("{orderId}")]
@@ -81,11 +91,11 @@ namespace Controllers
                 return BadRequest("Invalid user ID Format");
             }
             var result = await _customerOrderService.DeleteOrderService(orderIdGuid);
-            if (!result)
+            if (result)
             {
-                return NotFound();
+                return NoContent();
             }
-            return NoContent();
+            return NotFound();
         }
     }
 
