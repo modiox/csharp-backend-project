@@ -1,5 +1,6 @@
 using api.Controllers;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 [ApiController]
 [Route("/api/categories")]
@@ -36,23 +37,19 @@ public class CategoryController : ControllerBase
     }
 
     [HttpGet("{categoryId:guid}")]
-    public async Task<IActionResult> GetCategory(string categoryId)
+    public async Task<IActionResult> GetCategory(Guid categoryId)
     {
         try
         {
-            if (!Guid.TryParse(categoryId, out Guid categoryIdGuid))
-            {
-                return ApiResponse.BadRequest("Invalid Category ID Format");
-            }
-            var category = await _categoryService.GetCategoryById(categoryIdGuid);
+            
+            var category = await _categoryService.GetCategoryById(categoryId);
             if (category == null)
             {
-                // return NotFound(new { success = false, message = "No Category Found" });
+        
                 return ApiResponse.NotFound("No Categories Found");
             }
             else
             {
-                // return Ok(new { success = true, message = "single category is returned successfully", data = category });
                 return ApiResponse.Success(category, "Category Found");
             }
         }
@@ -74,7 +71,17 @@ public class CategoryController : ControllerBase
                 return ApiResponse.BadRequest("Something Went Wrong");
             }
             return ApiResponse.Created("Category is created successfully");
-        }
+        }catch (DbUpdateException ex) when (ex.InnerException is Npgsql.PostgresException postgresException)
+            {
+                if (postgresException.SqlState == "23505")
+                {
+                    return ApiResponse.Conflict("Duplicate Name. Category with Name already exists");
+                }
+                else
+                {
+                    return ApiResponse.ServerError(ex.Message);
+                }
+            }
         catch (Exception e)
         {
 
@@ -98,18 +105,22 @@ public class CategoryController : ControllerBase
     }
 
     [HttpDelete("{categoryId:guid}")]
-    public async Task<IActionResult> DeleteCategory(string categoryId)
+    public async Task<IActionResult> DeleteCategory(Guid categoryId)
     {
-        if (!Guid.TryParse(categoryId, out Guid categoryIdGuid))
+        try
         {
-            return ApiResponse.BadRequest("Invalid Category ID Format");
+            var result = await _categoryService.DeleteCategoryService(categoryId);
+            if (!result)
+            {
+                return ApiResponse.NotFound("Category Not Found");
+            }
+            return ApiResponse.Deleted("Category is deleted successfully");
         }
-        var result = await _categoryService.DeleteCategoryService(categoryIdGuid);
-        if (!result)
+        catch (Exception e)
         {
-            return ApiResponse.NotFound("Category Not Found");
+            return ApiResponse.ServerError(e.Message);
         }
-        return ApiResponse.Deleted("Category is deleted successfully");
+
     }
 
 
