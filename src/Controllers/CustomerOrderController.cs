@@ -1,3 +1,4 @@
+using api.Controllers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Controllers
@@ -19,7 +20,7 @@ namespace Controllers
         public async Task<IActionResult> GetAllOrder()
         {
             var orders = await _customerOrderService.GetAllOrdersService();
-            return Ok(orders);
+            return ApiResponse.Success(orders);
         }
 
         [HttpGet("{orderId}")]
@@ -27,17 +28,17 @@ namespace Controllers
         {
             if (!Guid.TryParse(orderId, out Guid orderIdGuid))
             {
-                return BadRequest("Invalid customer order ID Format");
+                return ApiResponse.BadRequest("Invalid user ID Format");
             }
 
             var order = await _customerOrderService.GetOrderById(orderIdGuid);
 
             if (order == null)
             {
-                return NotFound();
+                return ApiResponse.NotFound();
             }
 
-            return Ok(order);
+            return ApiResponse.Success(order);
         }
 
         [HttpPost]
@@ -46,11 +47,11 @@ namespace Controllers
             try
             {
                 await _customerOrderService.CreateOrderService(newOrder);
-                return StatusCode(201, "Order added");
+                return ApiResponse.Created("Order has added successfully!");
             }
             catch (Exception e)
             {
-                return StatusCode(500, e.Message);
+                return ApiResponse.ServerError(e.Message);
             }
         }
 
@@ -60,11 +61,11 @@ namespace Controllers
             try
             {
                 await _customerOrderService.AddProductToOrder(orderId, productId);
-                return Ok();
+                return ApiResponse.Created("Products Added to the order successfully");
             }
             catch (Exception e)
             {
-                return StatusCode(500, e.Message);
+                return ApiResponse.ServerError(e.Message);
             }
         }
 
@@ -73,14 +74,14 @@ namespace Controllers
         {
             if (!Guid.TryParse(orderId, out Guid orderIdGuid))
             {
-                return BadRequest("Invalid user ID Format");
+                return ApiResponse.BadRequest("Invalid user ID Format");
             }
             var result = await _customerOrderService.UpdateOrderService(orderIdGuid, updateOrder);
             if (result)
             {
-                return Ok();
+                return ApiResponse.Updated("Order has updated successfully");
             }
-            return NotFound();
+            return ApiResponse.NotFound();
         }
 
         [HttpDelete("{orderId}")]
@@ -88,14 +89,14 @@ namespace Controllers
         {
             if (!Guid.TryParse(orderId, out Guid orderIdGuid))
             {
-                return BadRequest("Invalid user ID Format");
+                return ApiResponse.BadRequest("Invalid user ID Format");
             }
             var result = await _customerOrderService.DeleteOrderService(orderIdGuid);
             if (result)
             {
-                return NoContent();
+                return ApiResponse.Deleted("Order has deleted Successfully");
             }
-            return NotFound();
+            return ApiResponse.NotFound("Order not Found");
         }
     }
 
