@@ -5,6 +5,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.AspNetCore.Identity;
+using api.Services;
 // using EntityFramework;
 // using api.Services;
 
@@ -25,8 +30,34 @@ builder.Services.AddControllers();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<CustomerOrderService>();
 builder.Services.AddScoped<CategoryService>();
-// builder.Services.AddScoped<ProductService>(); // //Will uncomment once added 
+builder.Services.AddScoped<ProductService>(); // //Will uncomment once added 
 builder.Services.AddScoped<CartService>();
+builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+
+
+var Configuration = builder.Configuration;
+var key = Encoding.ASCII.GetBytes(Configuration["Jwt:Key"]);
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.RequireHttpsMetadata = false; // set this one as a true in production
+    options.SaveToken = true;
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(key),
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidIssuer = Configuration["Jwt:Issuer"],
+        ValidAudience = Configuration["Jwt:Audience"],
+        ClockSkew = TimeSpan.Zero
+    };
+});
+
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
