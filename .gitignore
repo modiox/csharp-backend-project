@@ -4,6 +4,6 @@ bin
 obj
 *.http
 Migrations
-# appsettings.json 
+appsettings.json 
 # Backend.csproj
 # *.csproj
