@@ -21,7 +21,7 @@ builder.Services.AddControllers();
 
 //Add each newly created Services here
 builder.Services.AddScoped<UserService>();
-builder.Services.AddScoped<CustomerOrderService>();
+builder.Services.AddScoped<OrderService>();
 builder.Services.AddScoped<CategoryService>();
 builder.Services.AddScoped<ProductService>(); // //Will uncomment once added 
 builder.Services.AddScoped<CartService>();

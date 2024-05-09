@@ -25,7 +25,7 @@ public class User
     public DateTime? BirthDate { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow; 
 
-    public List<CustomerOrder> Orders { get; set; } = new List<CustomerOrder>();
+    public List<Order> Orders { get; set; } = new List<Order>();
 
     public List<Cart> Carts { get; set; } = new List<Cart>();
 }

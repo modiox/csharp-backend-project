@@ -29,6 +29,6 @@ public class Product
 
     public List<Cart> Carts { get; set; } = new List<Cart>();
 
-    public List<CustomerOrder> Orders { get; set; } = new List<CustomerOrder>();
+    public List<Order> Orders { get; set; } = new List<Order>();
 
 }
