@@ -25,7 +25,7 @@ namespace api.Dtos
     public DateTime BirthDate { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow; 
 
-    public List<CustomerOrderModel> Orders { get; set; } = new List<CustomerOrderModel>();
+    public List<OrderModel> Orders { get; set; } = new List<OrderModel>();
 
     public List<CartModel> Carts { get; set; } = new List<CartModel>();
     }

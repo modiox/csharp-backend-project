@@ -1,6 +1,8 @@
+using System.Security.Claims;
 using api.Controllers;
 using api.Dtos.User;
 using api.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
@@ -10,15 +12,15 @@ public class UserController : ControllerBase
     private readonly UserService _userService;
     private readonly AuthService _authService;
     private readonly ILogger<UserController> _logger;
-    
 
-    public UserController(UserService userService, ILogger<UserController> logger,AuthService authService)
+    public UserController(UserService userService, ILogger<UserController> logger, AuthService authService)
     {
         _userService = userService ?? throw new ArgumentNullException(nameof(userService));
         _logger = logger;
         _authService = authService;
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpGet]
     public async Task<IActionResult> GetAllUsers()
     {
@@ -39,6 +41,15 @@ public class UserController : ControllerBase
     {
         try
         {
+            var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdString))
+            {
+                return ApiResponse.UnAuthorized("User Id is missing from token");
+            }
+            if (!Guid.TryParse(userIdString, out userId))
+            {
+                return ApiResponse.BadRequest("Invalid User Id");
+            }
             var user = _userService.GetUserById(userId);
             if (user == null)
             {
@@ -51,7 +62,6 @@ public class UserController : ControllerBase
             return ApiResponse.ServerError("An error occurred while processing the request.");
         }
     }
-
 
     [HttpPost]
     public async Task<IActionResult> CreateUser(UserModel newUser)
@@ -67,10 +77,18 @@ public class UserController : ControllerBase
         }
     }
 
-
-    [HttpPut("{userId}")]
+    [HttpPut("profile")]
     public async Task<IActionResult> UpdateUser(Guid userId, UserModel updateUser)
     {
+        var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrEmpty(userIdString))
+        {
+            return ApiResponse.UnAuthorized("User Id is missing from token");
+        }
+        if (!Guid.TryParse(userIdString, out userId))
+        {
+            return ApiResponse.BadRequest("Invalid User Id");
+        }
         var user = await _userService.UpdateUser(userId, updateUser);
         if (user)
         {
@@ -79,9 +97,18 @@ public class UserController : ControllerBase
         return ApiResponse.Updated("User is updated successfully");
     }
 
-    [HttpDelete("{userId}")]
+    [HttpDelete("profile/delete")]
     public async Task<IActionResult> DeleteUser(Guid userId)
     {
+        var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrEmpty(userIdString))
+        {
+            return ApiResponse.UnAuthorized("User Id is missing from token");
+        }
+        if (!Guid.TryParse(userIdString, out userId))
+        {
+            return ApiResponse.BadRequest("Invalid User Id");
+        }
         var result = await _userService.DeleteUser(userId);
         if (result)
         {

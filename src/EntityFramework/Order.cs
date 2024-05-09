@@ -1,10 +1,9 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
-
 namespace EntityFramework
 {
-    [Table("CustomerOrder")]
-    public class CustomerOrder
+    [Table("Order")]
+    public class Order
     {
         public required Guid OrderId { get; set; }
 

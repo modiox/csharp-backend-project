@@ -11,7 +11,7 @@ public class AppDBContext : DbContext
 
     public DbSet<Category> Categories { get; set; }
 
-    public DbSet<CustomerOrder> CustomerOrders { get; set; }
+    public DbSet<Order> Orders { get; set; }
     public DbSet<Cart> Carts { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -69,15 +69,15 @@ public class AppDBContext : DbContext
         .HasForeignKey(p => p.CategoryId);
 
         // --------------------Order--------------------
-        modelBuilder.Entity<CustomerOrder>().HasKey(o => o.OrderId); //PK
-        modelBuilder.Entity<CustomerOrder>().Property(o => o.OrderId).IsRequired().ValueGeneratedOnAdd();
+        modelBuilder.Entity<Order>().HasKey(o => o.OrderId); //PK
+        modelBuilder.Entity<Order>().Property(o => o.OrderId).IsRequired().ValueGeneratedOnAdd();
 
-        modelBuilder.Entity<CustomerOrder>().Property(o => o.Status).IsRequired();
+        modelBuilder.Entity<Order>().Property(o => o.Status).IsRequired();
 
-        modelBuilder.Entity<CustomerOrder>().Property(o => o.Payment).IsRequired();
+        modelBuilder.Entity<Order>().Property(o => o.Payment).IsRequired();
 
         // ### Relationship Many-To-Many
-        modelBuilder.Entity<CustomerOrder>()
+        modelBuilder.Entity<Order>()
         .HasMany(o => o.Products)
         .WithMany(p => p.Orders)
         .UsingEntity(j => j.ToTable("OrderDetails"));

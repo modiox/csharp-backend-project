@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using api.Controllers;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,6 +16,11 @@ public class CartController : ControllerBase
     [HttpGet("{userId}")]
     public async Task<IActionResult> GetCartItems(Guid userId)
     {
+        var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrEmpty(userIdString))
+        {
+            return ApiResponse.UnAuthorized("User Id is missing from token");
+        }
         var cartItems = await _cartService.GetCartItemsAsync(userId);
 
         if (cartItems != null)
@@ -31,6 +37,11 @@ public class CartController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> AddToCart(Guid productId, Guid userId)
     {
+        var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrEmpty(userIdString))
+        {
+            return ApiResponse.UnAuthorized("User Id is missing from token");
+        }
         if (await _cartService.AddToCartAsync(productId, userId))
         {
             return ApiResponse.Created("Product added to cart successfully.");

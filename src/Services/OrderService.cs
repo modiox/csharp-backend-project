@@ -1,28 +1,28 @@
 using EntityFramework;
 using Microsoft.EntityFrameworkCore;
 
-public class CustomerOrderService
+public class OrderService
 {
     private AppDBContext _appDbContext;
-    public CustomerOrderService(AppDBContext appDbContext)
+    public OrderService(AppDBContext appDbContext)
     {
         _appDbContext = appDbContext;
     }
 
-    public async Task<List<CustomerOrder>> GetAllOrdersService()
+    public async Task<List<Order>> GetAllOrdersService()
     {
-        return await _appDbContext.CustomerOrders.Include(order => order.Products).ToListAsync();
+        return await _appDbContext.Orders.Include(order => order.Products).ToListAsync();
     }
 
-    public async Task<CustomerOrder?> GetOrderById(Guid orderId)
+    public async Task<Order?> GetOrderById(Guid orderId)
     {
-        return await _appDbContext.CustomerOrders.Include(o => o.Products).FirstOrDefaultAsync(o => o.OrderId == orderId);
+        return await _appDbContext.Orders.Include(o => o.Products).FirstOrDefaultAsync(o => o.OrderId == orderId);
     }
 
-    public async Task<Guid> CreateOrderService(CustomerOrderModel newOrder)
+    public async Task<Guid> CreateOrderService(OrderModel newOrder)
     {
         // Create record
-        var order = new CustomerOrder
+        var order = new Order
         {
             OrderId = Guid.NewGuid(),
             Status = OrderStatus.Pending,
@@ -32,7 +32,7 @@ public class CustomerOrderService
         };
 
         // Add the record to the context
-        await _appDbContext.CustomerOrders.AddAsync(order);
+        await _appDbContext.Orders.AddAsync(order);
         // Save to database
         await _appDbContext.SaveChangesAsync();
 
@@ -41,7 +41,7 @@ public class CustomerOrderService
 
     public async Task AddProductToOrder(Guid orderId, Guid productId)
     {
-        var order = await _appDbContext.CustomerOrders.Include(o => o.Products).FirstOrDefaultAsync(o => o.OrderId == orderId);
+        var order = await _appDbContext.Orders.Include(o => o.Products).FirstOrDefaultAsync(o => o.OrderId == orderId);
         var product = await _appDbContext.Products.FindAsync(productId);
 
         if (order != null && product != null)
@@ -61,15 +61,15 @@ public class CustomerOrderService
         }
     }
 
-    public async Task<bool> UpdateOrderService(Guid orderId, CustomerOrderModel updateOrder)
+    public async Task<bool> UpdateOrderService(Guid orderId, OrderModel updateOrder)
     {
-        var existingOrder = _appDbContext.CustomerOrders.FirstOrDefault(o => o.OrderId == orderId);
+        var existingOrder = _appDbContext.Orders.FirstOrDefault(o => o.OrderId == orderId);
         if (existingOrder != null)
         {
             existingOrder.Status = updateOrder.Status;
 
             // Add the record to the context
-            _appDbContext.CustomerOrders.Update(existingOrder);
+            _appDbContext.Orders.Update(existingOrder);
             // Save to database
             await _appDbContext.SaveChangesAsync();
             return true;
@@ -79,11 +79,11 @@ public class CustomerOrderService
 
     public async Task<bool> DeleteOrderService(Guid orderId)
     {
-        var orderToRemove = _appDbContext.CustomerOrders.FirstOrDefault(order => order.OrderId == orderId);
+        var orderToRemove = _appDbContext.Orders.FirstOrDefault(order => order.OrderId == orderId);
         if (orderToRemove != null)
         {
             // Use context to remove
-            _appDbContext.CustomerOrders.Remove(orderToRemove);
+            _appDbContext.Orders.Remove(orderToRemove);
             // Save to database
             await _appDbContext.SaveChangesAsync();
             return true;
