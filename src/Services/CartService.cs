@@ -19,7 +19,6 @@ public class CartService
                 .Include(c => c.Products)
                 .ToListAsync();
 
-
             return cartItems;
         }
         catch (Exception ex)
