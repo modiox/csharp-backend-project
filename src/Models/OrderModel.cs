@@ -16,7 +16,7 @@ public class OrderModel
   public required double Amount { get; set; }
 
   [Required(ErrorMessage = "Product Id is required")]
-  public required Guid ProductId { get; set; }
+  public Guid ProductId { get; set; }
 
   public List<ProductModel> Product { get; set; } = new List<ProductModel>();
 

@@ -33,7 +33,6 @@ public class CartController : ControllerBase
         }
     }
 
-
     [HttpPost]
     public async Task<IActionResult> AddToCart(Guid productId, Guid userId)
     {

@@ -26,7 +26,7 @@ namespace api.Services
                 Subject = new ClaimsIdentity(new[] {
                 new Claim(ClaimTypes.NameIdentifier, user.UserID.ToString()),
                 new Claim(ClaimTypes.Role, user.IsAdmin? "Admin" : "User"),
-                new Claim(ClaimTypes.Role, user.IsBanned? "Banned" : "User"),
+                new Claim(ClaimTypes.Role, user.IsBanned? "Banned" : "notBanned"),
             }),
 
                 Expires = DateTime.UtcNow.AddMinutes(2),

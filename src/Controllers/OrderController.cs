@@ -6,13 +6,13 @@ using Microsoft.AspNetCore.Mvc;
 namespace Controllers
 {
     [ApiController]
-    [Route("/api/customer-order")]
+    [Route("/api/order")]
     public class OrderController : ControllerBase
     {
         private readonly OrderService _orderService;
         public OrderController(OrderService orderService)
         {
-           _orderService = orderService;
+            _orderService = orderService;
         }
 
         [Authorize(Roles = "Admin")]
@@ -23,7 +23,7 @@ namespace Controllers
             return ApiResponse.Success(orders);
         }
 
-        // [Authorize(Roles = "Banned")]
+        [Authorize(Roles = "notBanned")]
         [HttpGet("{orderId}")]
         public async Task<IActionResult> GetCOrderById(string orderId)
         {
@@ -47,7 +47,7 @@ namespace Controllers
             return ApiResponse.Success(order);
         }
 
-        // [Authorize(Roles = "Banned")]
+        [Authorize(Roles = "notBanned")]
         [HttpPost]
         public async Task<IActionResult> CreateOrder(OrderModel newOrder)
         {
@@ -67,7 +67,7 @@ namespace Controllers
             }
         }
 
-        // [Authorize(Roles = "Banned")]
+        [Authorize(Roles = "notBanned")]
         [HttpPost("{orderId}")]
         public async Task<IActionResult> AddProductToOrder(Guid orderId, Guid productId)
         {
@@ -87,7 +87,7 @@ namespace Controllers
             }
         }
 
-        // [Authorize(Roles = "Banned")]
+        [Authorize(Roles = "notBanned")]
         [HttpPut("{orderId}")]
         public async Task<IActionResult> UpdateOrder(string orderId, OrderModel updateOrder)
         {
@@ -108,7 +108,7 @@ namespace Controllers
             return ApiResponse.NotFound();
         }
 
-        // [Authorize(Roles = "Banned")]
+        [Authorize(Roles = "notBanned")]
         [HttpDelete("{orderId}")]
         public async Task<IActionResult> DeleteOrder(string orderId)
         {
