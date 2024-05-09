@@ -8,9 +8,9 @@ using Microsoft.EntityFrameworkCore;
 public class CategoryController : ControllerBase
 {
     private readonly CategoryService _categoryService;
-    public CategoryController(AppDBContext appDbContext)
+    public CategoryController(CategoryService categoryService)
     {
-        _categoryService = new CategoryService(appDbContext);
+        _categoryService = categoryService;
     }
 
     [HttpGet]

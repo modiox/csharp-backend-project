@@ -7,9 +7,9 @@ public class ProductController : ControllerBase
 {
 
     private readonly ProductService _productService;
-    public ProductController(AppDBContext appDBContext)
+    public ProductController(ProductService productService)
     {
-        _productService = new ProductService(appDBContext);
+        _productService = productService;
     }
 
     [HttpGet]

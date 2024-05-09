@@ -9,22 +9,21 @@ namespace Controllers
     [Route("/api/customer-order")]
     public class OrderController : ControllerBase
     {
-        private readonly OrderService _OrderService;
-
-        public OrderController(AppDBContext appDbContext)
+        private readonly OrderService _orderService;
+        public OrderController(OrderService orderService)
         {
-            _OrderService = new OrderService(appDbContext);
+           _orderService = orderService;
         }
 
         [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> GetAllOrder()
         {
-            var orders = await _OrderService.GetAllOrdersService();
+            var orders = await _orderService.GetAllOrdersService();
             return ApiResponse.Success(orders);
         }
 
-        [Authorize(Roles = "Banned")]
+        // [Authorize(Roles = "Banned")]
         [HttpGet("{orderId}")]
         public async Task<IActionResult> GetCOrderById(string orderId)
         {
@@ -38,7 +37,7 @@ namespace Controllers
                 return ApiResponse.BadRequest("Invalid user ID Format");
             }
 
-            var order = await _OrderService.GetOrderById(orderIdGuid);
+            var order = await _orderService.GetOrderById(orderIdGuid);
 
             if (order == null)
             {
@@ -48,7 +47,7 @@ namespace Controllers
             return ApiResponse.Success(order);
         }
 
-        [Authorize(Roles = "Banned")]
+        // [Authorize(Roles = "Banned")]
         [HttpPost]
         public async Task<IActionResult> CreateOrder(OrderModel newOrder)
         {
@@ -59,7 +58,7 @@ namespace Controllers
                 {
                     return ApiResponse.UnAuthorized("User Id is missing from token");
                 }
-                await _OrderService.CreateOrderService(newOrder);
+                await _orderService.CreateOrderService(newOrder);
                 return ApiResponse.Created("Order has added successfully!");
             }
             catch (Exception e)
@@ -68,7 +67,7 @@ namespace Controllers
             }
         }
 
-        [Authorize(Roles = "Banned")]
+        // [Authorize(Roles = "Banned")]
         [HttpPost("{orderId}")]
         public async Task<IActionResult> AddProductToOrder(Guid orderId, Guid productId)
         {
@@ -79,7 +78,7 @@ namespace Controllers
                 {
                     return ApiResponse.UnAuthorized("User Id is missing from token");
                 }
-                await _OrderService.AddProductToOrder(orderId, productId);
+                await _orderService.AddProductToOrder(orderId, productId);
                 return ApiResponse.Created("Products Added to the order successfully");
             }
             catch (Exception e)
@@ -88,7 +87,7 @@ namespace Controllers
             }
         }
 
-        [Authorize(Roles = "Banned")]
+        // [Authorize(Roles = "Banned")]
         [HttpPut("{orderId}")]
         public async Task<IActionResult> UpdateOrder(string orderId, OrderModel updateOrder)
         {
@@ -101,7 +100,7 @@ namespace Controllers
             {
                 return ApiResponse.BadRequest("Invalid user ID Format");
             }
-            var result = await _OrderService.UpdateOrderService(orderIdGuid, updateOrder);
+            var result = await _orderService.UpdateOrderService(orderIdGuid, updateOrder);
             if (result)
             {
                 return ApiResponse.Updated("Order has updated successfully");
@@ -109,7 +108,7 @@ namespace Controllers
             return ApiResponse.NotFound();
         }
 
-        [Authorize(Roles = "Banned")]
+        // [Authorize(Roles = "Banned")]
         [HttpDelete("{orderId}")]
         public async Task<IActionResult> DeleteOrder(string orderId)
         {
@@ -122,7 +121,7 @@ namespace Controllers
             {
                 return ApiResponse.BadRequest("Invalid user ID Format");
             }
-            var result = await _OrderService.DeleteOrderService(orderIdGuid);
+            var result = await _orderService.DeleteOrderService(orderIdGuid);
             if (result)
             {
                 return ApiResponse.Deleted("Order has deleted Successfully");
