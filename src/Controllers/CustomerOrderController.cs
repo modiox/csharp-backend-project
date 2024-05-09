@@ -1,4 +1,6 @@
+using System.Security.Claims;
 using api.Controllers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Controllers
@@ -7,15 +9,14 @@ namespace Controllers
     [Route("/api/customer-order")]
     public class CustomerOrderController : ControllerBase
     {
-
         private readonly CustomerOrderService _customerOrderService;
-
 
         public CustomerOrderController(AppDBContext appDbContext)
         {
             _customerOrderService = new CustomerOrderService(appDbContext);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> GetAllOrder()
         {
@@ -26,6 +27,11 @@ namespace Controllers
         [HttpGet("{orderId}")]
         public async Task<IActionResult> GetCustomerOrderById(string orderId)
         {
+            var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdString))
+            {
+                return ApiResponse.UnAuthorized("User Id is missing from token");
+            }
             if (!Guid.TryParse(orderId, out Guid orderIdGuid))
             {
                 return ApiResponse.BadRequest("Invalid user ID Format");
@@ -46,6 +52,11 @@ namespace Controllers
         {
             try
             {
+                var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(userIdString))
+                {
+                    return ApiResponse.UnAuthorized("User Id is missing from token");
+                }
                 await _customerOrderService.CreateOrderService(newOrder);
                 return ApiResponse.Created("Order has added successfully!");
             }
@@ -60,6 +71,11 @@ namespace Controllers
         {
             try
             {
+                var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(userIdString))
+                {
+                    return ApiResponse.UnAuthorized("User Id is missing from token");
+                }
                 await _customerOrderService.AddProductToOrder(orderId, productId);
                 return ApiResponse.Created("Products Added to the order successfully");
             }
@@ -72,6 +88,11 @@ namespace Controllers
         [HttpPut("{orderId}")]
         public async Task<IActionResult> UpdateOrder(string orderId, CustomerOrderModel updateOrder)
         {
+            var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdString))
+            {
+                return ApiResponse.UnAuthorized("User Id is missing from token");
+            }
             if (!Guid.TryParse(orderId, out Guid orderIdGuid))
             {
                 return ApiResponse.BadRequest("Invalid user ID Format");
@@ -87,6 +108,11 @@ namespace Controllers
         [HttpDelete("{orderId}")]
         public async Task<IActionResult> DeleteOrder(string orderId)
         {
+            var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdString))
+            {
+                return ApiResponse.UnAuthorized("User Id is missing from token");
+            }
             if (!Guid.TryParse(orderId, out Guid orderIdGuid))
             {
                 return ApiResponse.BadRequest("Invalid user ID Format");

@@ -1,4 +1,5 @@
 using api.Controllers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -38,11 +39,9 @@ public class CategoryController : ControllerBase
     {
         try
         {
-            
             var category = await _categoryService.GetCategoryById(categoryId);
             if (category == null)
             {
-        
                 return ApiResponse.NotFound("No Categories Found");
             }
             else
@@ -57,6 +56,7 @@ public class CategoryController : ControllerBase
         }
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> CreateCategory(CategoryModel newCategory)
     {
@@ -68,17 +68,18 @@ public class CategoryController : ControllerBase
                 return ApiResponse.BadRequest("Something Went Wrong");
             }
             return ApiResponse.Created("Category is created successfully");
-        }catch (DbUpdateException ex) when (ex.InnerException is Npgsql.PostgresException postgresException)
+        }
+        catch (DbUpdateException ex) when (ex.InnerException is Npgsql.PostgresException postgresException)
+        {
+            if (postgresException.SqlState == "23505")
             {
-                if (postgresException.SqlState == "23505")
-                {
-                    return ApiResponse.Conflict("Duplicate Name. Category with Name already exists");
-                }
-                else
-                {
-                    return ApiResponse.ServerError(ex.Message);
-                }
+                return ApiResponse.Conflict("Duplicate Name. Category with Name already exists");
             }
+            else
+            {
+                return ApiResponse.ServerError(ex.Message);
+            }
+        }
         catch (Exception e)
         {
 
@@ -86,6 +87,7 @@ public class CategoryController : ControllerBase
         }
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPut("{categoryId:guid}")]
     public async Task<IActionResult> UpdateCategory(Guid categoryId, CategoryModel updateCategory)
     {
@@ -101,6 +103,7 @@ public class CategoryController : ControllerBase
 
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{categoryId:guid}")]
     public async Task<IActionResult> DeleteCategory(Guid categoryId)
     {
@@ -119,6 +122,4 @@ public class CategoryController : ControllerBase
         }
 
     }
-
-
 }

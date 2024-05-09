@@ -46,6 +46,7 @@ public class UserService
                 FirstName = newUser.FirstName,
                 LastName = newUser.LastName,
                 CreatedAt = DateTime.UtcNow,
+                BirthDate = newUser.BirthDate,
                 Address = newUser.Address,
                 IsAdmin = newUser.IsAdmin,
                 IsBanned = false
