@@ -77,7 +77,6 @@ public class UserController : ControllerBase
         }
     }
 
-
     [HttpPut("profile")]
     public async Task<IActionResult> UpdateUser(Guid userId, UserModel updateUser)
     {
