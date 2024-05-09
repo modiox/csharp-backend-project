@@ -27,6 +27,7 @@ builder.Services.AddScoped<ProductService>(); // //Will uncomment once added
 builder.Services.AddScoped<CartService>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+builder.Services.AddAutoMapper(typeof(Program));
 
 
 var Configuration = builder.Configuration;

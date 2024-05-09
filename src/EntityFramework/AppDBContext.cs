@@ -26,9 +26,9 @@ public class AppDBContext : DbContext
         modelBuilder.Entity<User>().Property(u => u.Email).IsRequired().HasMaxLength(100);
         modelBuilder.Entity<User>().HasIndex(u => u.Email).IsUnique();
 
-        modelBuilder.Entity<User>().Property(u => u.Password).IsRequired().HasAnnotation("MinLength", 8)
-        .HasAnnotation("MaxLength", 32)
-        .HasAnnotation("RegularExpression", @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,32}$");
+        modelBuilder.Entity<User>().Property(u => u.Password).IsRequired().HasAnnotation("MinLength", 8);
+        // .HasAnnotation("MaxLength", 200);
+        // .HasAnnotation("RegularExpression", @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,32}$");
 
         modelBuilder.Entity<User>().Property(u => u.Email).IsRequired().HasAnnotation("MinLength", 5)
         .HasAnnotation("MaxLength", 50)
