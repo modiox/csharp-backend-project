@@ -10,14 +10,13 @@ public class UserController : ControllerBase
     private readonly UserService _userService;
     private readonly AuthService _authService;
     private readonly ILogger<UserController> _logger;
-    private AppDBContext _appDbContext;
+    
 
-    public UserController(UserService userService, AppDBContext appDBContext, ILogger<UserController> logger,AuthService authService)
+    public UserController(UserService userService, ILogger<UserController> logger,AuthService authService)
     {
         _userService = userService ?? throw new ArgumentNullException(nameof(userService));
         _logger = logger;
-        _appDbContext = appDBContext;
-         _authService = authService;
+        _authService = authService;
     }
 
     [HttpGet]
