@@ -122,6 +122,7 @@ public class UserService
         }
         var userDto = new UserDto
         {
+            UserID = user.UserID,
             Username = user.Username,
             Email = user.Email,
             FirstName = user.FirstName,

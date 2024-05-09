@@ -34,14 +34,19 @@ public class CartController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddToCart(Guid productId, Guid userId)
+    public async Task<IActionResult> AddToCart(Guid productId, string userId)
     {
         var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (string.IsNullOrEmpty(userIdString))
         {
             return ApiResponse.UnAuthorized("User Id is missing from token");
         }
-        if (await _cartService.AddToCartAsync(productId, userId))
+        if (!Guid.TryParse(userId, out Guid userIDGuid))
+        {
+            return ApiResponse.BadRequest("Invalid user ID Format");
+        }
+
+        if (await _cartService.AddToCartAsync(productId, userIDGuid))
         {
             return ApiResponse.Created("Product added to cart successfully.");
         }
