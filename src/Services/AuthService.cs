@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using api.Dtos;
 using Microsoft.IdentityModel.Tokens;
 
 namespace api.Services
@@ -15,7 +16,7 @@ namespace api.Services
             Console.WriteLine($"{_configuration["Jwt:Issuer"]}");
         }
 
-        public string GenerateJwt(User user)
+        public string GenerateJwt(UserDto user)
         {
 
             var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]);

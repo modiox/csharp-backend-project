@@ -20,17 +20,14 @@ public class CategoryController : ControllerBase
             var categories = await _categoryService.GetAllCategoryService();
             if (categories.ToList().Count < 1)
             {
-                // return NotFound(new { success = false, message = "No Category Found" });
                 return ApiResponse.NotFound("No Category Found");
             }
-            // return Ok(new { success = true, message = "all categories are returned successfully", data = categories });
             return ApiResponse.Success(categories, "all categories are returned successfully");
 
         }
         catch (Exception e)
         {
             Console.WriteLine($"An error occurred here when we tried get all the category");
-            // return StatusCode(500, e.Message);
             return ApiResponse.ServerError(e.Message);
         }
 
