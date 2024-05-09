@@ -25,7 +25,7 @@ public class CartController : ControllerBase
 
         if (cartItems != null)
         {
-            return ApiResponse.Success(cartItems, "Cart returned");
+            return ApiResponse.Success(cartItems);
         }
         else
         {
