@@ -49,7 +49,7 @@ public class UserService
                 BirthDate = newUser.BirthDate,
                 Address = newUser.Address,
                 IsAdmin = newUser.IsAdmin,
-                IsBanned = false
+                IsBanned = newUser.IsBanned
             };
 
             _dbContext.Users.Add(createUser);

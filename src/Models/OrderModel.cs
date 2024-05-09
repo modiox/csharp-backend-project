@@ -5,7 +5,7 @@ public enum PaymentMethod { CreditCard = 0, ApplePay = 1, Visa = 2, Cash = 3, Pa
 public class OrderModel
 {
   [Required(ErrorMessage = "Order Id is required")]
-  public required Guid OrderId { get; set; }
+  public Guid OrderId { get; set; }
 
   [Required(ErrorMessage = "Order Status is required")]
   public required OrderStatus Status { get; set; }
@@ -16,7 +16,7 @@ public class OrderModel
   public required double Amount { get; set; }
 
   [Required(ErrorMessage = "Product Id is required")]
-  public required Guid ProductId { get; set; }
+  public Guid ProductId { get; set; }
 
   public List<ProductModel> Product { get; set; } = new List<ProductModel>();
 
