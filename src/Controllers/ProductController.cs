@@ -83,11 +83,12 @@ public class ProductController:ControllerBase{
     }
 
     [HttpGet("search")]
-    public async Task<IActionResult> SearchProducts(string keyword, int page = 1, int pageSize = 10)
+    public async Task<IActionResult> SearchProducts(string? keyword, decimal? minPrice, decimal? maxPrice, string? sortBy, bool isAscending, int page = 1, int pageSize = 3)
     {
+
         try
         {
-            var products = await _productService.SearchProductsAsync(keyword, page, pageSize);
+            var products = await _productService.SearchProductsAsync(keyword, minPrice, maxPrice, sortBy, isAscending, page, pageSize);
             if (products.Any())
             {
                 return Ok(products);
@@ -97,9 +98,13 @@ public class ProductController:ControllerBase{
                 return ApiResponse.NotFound("No products found matching the search keyword");
             }
         }
-        catch (Exception)
+        catch
         {
+
             return ApiResponse.ServerError();
         }
+
+
     }
+
 }

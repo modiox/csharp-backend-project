@@ -81,16 +81,50 @@ public class ProductService
         return false;
     }
 
-    //Search service 
-
-
-
-    public async Task<IEnumerable<Product>> SearchProductsAsync(string searchKeyword, int page, int pageSize)
+  
+    public async Task<IEnumerable<Product>> SearchProductsAsync(string? searchKeyword, decimal? minPrice = 0, decimal? maxPrice = decimal.MaxValue, string? sortBy = null, bool isAscending = true, int page = 1, int pageSize = 3)
     {
-        return await _appDbContext.Products
-            .Where(p => p.ProductName.Contains(searchKeyword))
+        var query = _appDbContext.Products
+        .Where(p => p.ProductName
+        .ToLower().Contains(searchKeyword.ToLower())); //called on the product name and the search keyword so they can get matched
+
+
+        if (minPrice > 0)
+        {
+            query = query.Where(p => p.Price >= minPrice);
+        }
+
+        if (maxPrice < decimal.MaxValue)
+        {
+            query = query.Where(p => p.Price <= maxPrice);
+        }
+
+        if (!string.IsNullOrEmpty(sortBy))
+        {
+            switch (sortBy.ToLower())
+            {
+                case "price":
+                    query = isAscending ? query.OrderBy(p => p.Price) : query.OrderByDescending(p => p.Price);
+                    break;
+                case "date":
+                    query = query = isAscending ? query.OrderBy(p => p.CreatedAt) : query.OrderByDescending(p => p.CreatedAt);
+                    break;
+                default:
+                    query = isAscending ? query.OrderBy(p => p.ProductName) : query.OrderByDescending(p => p.ProductName);
+                    break;
+            }
+        }
+        else
+        {
+            query = query.OrderBy(p => p.CreatedAt);
+        }
+
+        // Pagination
+        var products = await query
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();
+
+        return products;
     }
 }
