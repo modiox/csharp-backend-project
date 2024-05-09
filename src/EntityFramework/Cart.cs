@@ -1,17 +1,15 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-    [Table("Cart")]
-    public class Cart
-    {
-        [Required(ErrorMessage = "User Id is required")]
-        public Guid ProductID { get; set; }
-        [Required(ErrorMessage = "User Id is required")]
-        public Guid UserID { get; set; }
-
-
-        public Product Product { get; set; }
-
-       
-        public User User { get; set; }
-    }
+[Table("Cart")]
+public class Cart
+{
+    public Guid CartId = Guid.NewGuid();
+    [Required(ErrorMessage = "User Id is required")]
+    public Guid ProductID { get; set; }
+    [Required(ErrorMessage = "User Id is required")]
+    public Guid UserID { get; set; }
+    public virtual Product? Product { get; set; }
+    public List<Product> Products { get; set; } = new List<Product>();
+    public virtual User? User { get; set; }
+}

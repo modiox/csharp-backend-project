@@ -27,8 +27,9 @@ public class Product
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow; 
 
-    public List<Cart> Carts { get; set; } = new List<Cart>();
+    public Guid? CartId { get; set; } 
 
+    public virtual Cart? Cart {set; get;} 
     public List<Order> Orders { get; set; } = new List<Order>();
 
 }

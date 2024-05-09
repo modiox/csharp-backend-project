@@ -98,7 +98,12 @@ public class AppDBContext : DbContext
         //-------------Cart-------------------- 
 
         modelBuilder.Entity<Cart>()
-        .HasKey(c => new { c.ProductID, c.UserID });
+        .HasKey(c => new { c.CartId});
+
+        modelBuilder.Entity<Cart>()
+        .HasMany(c => c.Products)    // Each User can have multiple Carts
+        .WithOne(p => p.Cart)     // Each Cart belongs to one User
+        .HasForeignKey(p => p.CartId); 
 
         // Configure relationships and apply validations
         // modelBuilder.Entity<Cart>()
