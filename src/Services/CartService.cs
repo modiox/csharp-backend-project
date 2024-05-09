@@ -10,31 +10,17 @@ public class CartService
         _logger = logger;
     }
 
-    public async Task<List<CartModel>?> GetCartItemsAsync(Guid userId)
+    public async Task<List<Cart>?> GetCartItemsAsync(Guid userId)
     {
         try
         {
             var cartItems = await _dbContext.Carts
                 .Where(c => c.UserID == userId)
-                .Include(c => c.Product)
+                .Include(c => c.Products)
                 .ToListAsync();
 
-            // Map Cart entities to CartModel
-            var cartModels = cartItems.Select(c => new CartModel
-            {
-                ProductID = c.ProductID,
-                UserID = c.UserID,
-                Product = new ProductModel
-                {
-                    ProductID = c.Product.ProductID,
-                    ProductName = c.Product.ProductName,
-                    Price = c.Product.Price,
-                    Quantity = c.Product.Quantity,
-                    CategoryID = c.Product.CategoryId
-                }
-            }).ToList();
 
-            return cartModels;
+            return cartItems;
         }
         catch (Exception ex)
         {
