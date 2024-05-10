@@ -1,9 +1,12 @@
 
+---- In the latest design, we didn't include this table, but rather created it using many-to-many relationship between product and order 
+
+
 CREATE TABLE orderDetails (
     orderID INT,
     productID INT,
     productQuantity INT NOT NULL,
-    FOREIGN KEY (orderID) REFERENCES customerOrder (orderID),
+    FOREIGN KEY (orderID) REFERENCES order (orderID),
     FOREIGN KEY (productID) REFERENCES product (productID)
 );
 

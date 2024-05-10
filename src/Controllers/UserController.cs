@@ -52,7 +52,7 @@ public class UserController : ControllerBase
             var user = _userService.GetUserById(userId);
             if (user == null)
             {
-                 throw new NotFoundException("User not exist or you provide an invalid Id");
+                 throw new NotFoundException("User does not exist or an invalid Id is provided");
             }
             return ApiResponse.Success(user, "User Returned");
     }
@@ -86,7 +86,7 @@ public class UserController : ControllerBase
         var user = await _userService.UpdateUser(userId, updateUser);
         if (!user)
         {
-            throw new NotFoundException("User not exist or you provide an invalid Id");
+            throw new NotFoundException("User does not exist or an invalid Id is provided");
         }
         return ApiResponse.Updated("User is updated successfully");
     }
@@ -107,7 +107,7 @@ public class UserController : ControllerBase
         var result = await _userService.DeleteUser(userId);
         if (!result)
         {
-           throw new NotFoundException("User not exist or you provide an invalid Id");
+           throw new NotFoundException("User does not exist or an invalid Id is provided");
         }
         return ApiResponse.Deleted("User is deleted successfully");
     }

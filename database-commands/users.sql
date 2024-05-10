@@ -1,35 +1,4 @@
 
--- Old customer table definition 
-CREATE TABLE Customer( 
- CustomerID SERIAL PRIMARY KEY, 
- Username VARCHAR(50) UNIQUE NOT NULL, 
- Email VARCHAR(100) UNIQUE NOT NULL,
- Password VARCHAR(32) NOT NULL, 
- FirstName VARCHAR(20) NOT NULL,
- LastName VARCHAR(20), 
- phoneNumber VARCHAR(13) UNIQUE,
- Address VARCHAR(255), 
- DateOfBirth DATE
- );
-
--- Renamed the table to users and column to usersID
-
-ALTER TABLE customer RENAME TO users;
-ALTER TABLE users RENAME COLUMN customerID TO userID;
-
-
- -- Queries entered in pgAdmin instead of dropping the entire table 
-
- ALTER TABLE users
- ADD COLUMN isBanned BOOLEAN DEFAULT FALSE; 
-
- ALTER TABLE users 
- ADD COLUMN isAdmin BOOLEAN DEFAULT FALSE;  -- false: customer, true: admin
-
- ALTER TABLE users
- ADD COLUMN createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
-
- -- The new users table definition 
 CREATE TABLE users( 
  userID SERIAL PRIMARY KEY, 
  username VARCHAR(50) UNIQUE NOT NULL, 
