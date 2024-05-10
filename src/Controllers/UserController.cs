@@ -1,6 +1,8 @@
+using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using api.Controllers;
 using api.Dtos.User;
+using api.Middlewares;
 using api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -20,47 +22,39 @@ public class UserController : ControllerBase
         _authService = authService;
     }
 
+
     [Authorize(Roles = "Admin")]
     [HttpGet]
     public async Task<IActionResult> GetAllUsers()
     {
-        try
-        {
             var users = await _userService.GetAllUsersAsync();
+            if (users == null)
+            {
+                 throw new NotFoundException("No user Found");
+            }
             return ApiResponse.Success(users, "all users are returned successfully");
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "An error occurred while retrieving all users.");
-            return ApiResponse.ServerError("An error occurred while processing the request.");
-        }
     }
+
 
     [HttpGet("{userId}")]
     public IActionResult GetUser(Guid userId)
     {
-        try
-        {
+       
             var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(userIdString))
             {
-                return ApiResponse.UnAuthorized("User Id is missing from token");
+                 throw new UnauthorizedAccessException("User Id is missing from token");
             }
             if (!Guid.TryParse(userIdString, out userId))
             {
-                return ApiResponse.BadRequest("Invalid User Id");
+                  throw new BadRequestException("Invalid User Id");
             }
             var user = _userService.GetUserById(userId);
             if (user == null)
             {
-                return ApiResponse.NotFound("User not exist or you provide an invalid Id");
+                 throw new NotFoundException("User not exist or you provide an invalid Id");
             }
             return ApiResponse.Success(user, "User Returned");
-        }
-        catch
-        {
-            return ApiResponse.ServerError("An error occurred while processing the request.");
-        }
     }
 
     [HttpPost]
@@ -73,7 +67,7 @@ public class UserController : ControllerBase
         }
         else
         {
-            return ApiResponse.ServerError("An error occurred while creating the user.");
+            throw new Exception("An error occurred while creating the user.");
         }
     }
 
@@ -83,36 +77,37 @@ public class UserController : ControllerBase
         var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (string.IsNullOrEmpty(userIdString))
         {
-            return ApiResponse.UnAuthorized("User Id is missing from token");
+            throw new UnauthorizedAccessException("User Id is missing from token");
         }
         if (!Guid.TryParse(userIdString, out userId))
         {
-            return ApiResponse.BadRequest("Invalid User Id");
+             throw new BadRequestException("Invalid User Id");
         }
         var user = await _userService.UpdateUser(userId, updateUser);
-        if (user)
+        if (!user)
         {
-            return ApiResponse.NotFound("User not exist or you provide an invalid Id");
+            throw new NotFoundException("User not exist or you provide an invalid Id");
         }
         return ApiResponse.Updated("User is updated successfully");
     }
 
+  
     [HttpDelete("profile/delete")]
     public async Task<IActionResult> DeleteUser(Guid userId)
     {
         var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (string.IsNullOrEmpty(userIdString))
         {
-            return ApiResponse.UnAuthorized("User Id is missing from token");
+             throw new UnauthorizedAccessException("User Id is missing from token");
         }
         if (!Guid.TryParse(userIdString, out userId))
         {
-            return ApiResponse.BadRequest("Invalid User Id");
+              throw new BadRequestException("Invalid User Id");
         }
         var result = await _userService.DeleteUser(userId);
-        if (result)
+        if (!result)
         {
-            return ApiResponse.NotFound("User not exist or you provide an invalid Id");
+           throw new NotFoundException("User not exist or you provide an invalid Id");
         }
         return ApiResponse.Deleted("User is deleted successfully");
     }
@@ -122,12 +117,12 @@ public class UserController : ControllerBase
     {
         if (!ModelState.IsValid)
         {
-            return ApiResponse.BadRequest("Invalid User Data");
+            throw new BadRequestException("Invalid User Data");
         }
         var loggedInUser = await _userService.LoginUserAsync(loginDto);
         if (loggedInUser == null)
         {
-            return ApiResponse.UnAuthorized("Invalid credentials");
+            throw new UnauthorizedAccessException("Invalid credentials") ;
         }
 
         var token = _authService.GenerateJwt(loggedInUser);

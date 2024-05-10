@@ -8,10 +8,13 @@ public class UserModel
     public required string Username { get; set; }
 
     [Required(ErrorMessage = "Email is required")]
+    [StringLength(50, ErrorMessage = "Must be between 5 and 50 characters", MinimumLength = 5)]
+    [RegularExpression("^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$", ErrorMessage = "Must be a valid email")]
     public required string Email { get; set; }
 
 
     [Required(ErrorMessage = "Password is required")]
+    [MinLength(8)]
     public required string Password { get; set; }
 
     [Required(ErrorMessage = "First name is required")]

@@ -12,27 +12,17 @@ public class CartService
 
     public async Task<List<Cart>?> GetCartItemsAsync(Guid userId)
     {
-        try
-        {
             var cartItems = await _dbContext.Carts
                 .Where(c => c.UserID == userId)
                 .Include(c => c.Products)
                 .ToListAsync();
 
             return cartItems;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "An error occurred while performing cart operation.");
-            throw;
-        }
     }
 
 
     public async Task<bool> AddToCartAsync(Guid productId, Guid userId)
     {
-        try
-        {
             var existingCart = await _dbContext.Carts
                 .Where(c => c.ProductID == productId && c.UserID == userId)
                 .FirstOrDefaultAsync();
@@ -53,18 +43,10 @@ public class CartService
             await _dbContext.SaveChangesAsync();
 
             return true;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "An error occurred while performing cart operation.");
-            throw;
-        }
     }
 
     public async Task<bool> RemoveFromCartAsync(Guid productId, Guid userId)
     {
-        try
-        {
             var cartItem = await _dbContext.Carts
                 .Where(c => c.ProductID == productId && c.UserID == userId)
                 .FirstOrDefaultAsync();
@@ -79,11 +61,5 @@ public class CartService
             await _dbContext.SaveChangesAsync();
 
             return true;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "An error occurred while performing cart operation.");
-            throw;
-        }
     }
 }

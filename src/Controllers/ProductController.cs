@@ -1,4 +1,6 @@
+using System.ComponentModel.DataAnnotations;
 using api.Controllers;
+using api.Middlewares;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 [ApiController]
@@ -15,82 +17,55 @@ public class ProductController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAllProduct([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 5)
     {
-        try
-        {
+       
             var product = await _productService.GetAllProductService(pageNumber, pageSize);
             if (product == null)
             {
-                return ApiResponse.NotFound("No Product Found");
+                 throw new NotFoundException("No Product Found");
             }
             return ApiResponse.Success(product, "All products are returned successfully");
-
-
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine($"An error occurred here when we tried get all the products");
-            return ApiResponse.ServerError(e.Message);
-        }
     }
 
     [HttpGet("{productId}")]
     public async Task<IActionResult> GetProductById(string productId)
     {
-        try
-        {
             if (!Guid.TryParse(productId, out Guid productIdGuid))
             {
-                return ApiResponse.BadRequest("Invalid product ID format");
+                throw new BadRequestException("Invalid product ID format");
             }
             var product = await _productService.GetProductById(productIdGuid);
             if (product == null)
             {
-                return ApiResponse.NotFound("No Product Found");
-
+                throw new NotFoundException("No Product Found");
             }
             else
             {
-
                 return ApiResponse.Success(product, "single product is returned successfully");
-
             }
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine("$An error occurred here we tried get the category");
-            return ApiResponse.ServerError(e.Message);
-        }
     }
 
     [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> AddProduct(ProductModel newProduct)
     {
-        try
-        {
-            var response = await _productService.AddProductAsync(newProduct);
+         var response = await _productService.AddProductAsync(newProduct);
             return ApiResponse.Created(response);
-        }
-        catch (Exception ex)
-        {
-            return ApiResponse.ServerError(ex.Message);
-        }
     }
+
+
 
     [Authorize(Roles = "Admin")]
     [HttpPut("{productId:guid}")]
     public async Task<IActionResult> UpdateProduct(Guid productId, ProductModel updateProduct)
     {
-        try
+          var result =  await _productService.UpdateProductService(productId, updateProduct);
+             if (!result)
         {
-            await _productService.UpdateProductService(productId, updateProduct);
+            throw new NotFoundException("product Not Found");
+        }
             return ApiResponse.Updated("Product is Updated successfully");
-        }
-        catch (Exception e)
-        {
-            return ApiResponse.ServerError(e.Message);
-        }
     }
+
 
     [Authorize(Roles = "Admin")]
     [HttpDelete("{productId:guid}")]
@@ -98,22 +73,20 @@ public class ProductController : ControllerBase
     {
         if (!Guid.TryParse(productId, out Guid productIdGuid))
         {
-            return ApiResponse.BadRequest("Invalid product ID format");
+            throw new BadRequestException("Invalid product ID format");
         }
         var result = await _productService.DeleteProductService(productIdGuid);
         if (!result)
         {
-            return NotFound();
+             throw new NotFoundException("No Product Found");
         }
         return ApiResponse.Deleted("product is Deleted successfully");
     }
 
+
     [HttpGet("search")]
     public async Task<IActionResult> SearchProducts(string? keyword, decimal? minPrice, decimal? maxPrice, string? sortBy, bool isAscending, int page = 1, int pageSize = 3)
     {
-
-        try
-        {
             var products = await _productService.SearchProductsAsync(keyword, minPrice, maxPrice, sortBy, isAscending, page, pageSize);
             if (products.Any())
             {
@@ -121,15 +94,8 @@ public class ProductController : ControllerBase
             }
             else
             {
-                return ApiResponse.NotFound("No products found matching the search keyword");
+                throw new NotFoundException("No products found matching the search keyword");
             }
-        }
-        catch
-        {
-
-            return ApiResponse.ServerError();
-        }
-
 
     }
 

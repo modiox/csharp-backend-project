@@ -6,6 +6,7 @@ using System.Text;
 using Microsoft.AspNetCore.Identity;
 using api.Services;
 using Microsoft.OpenApi.Models;
+using api.Middlewares;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -98,4 +99,5 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.MapControllers();
+ app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.Run("http://localhost:5343");
