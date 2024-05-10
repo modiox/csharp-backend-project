@@ -48,11 +48,7 @@ public class ProductController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> AddProduct(ProductModel newProduct)
     {
-     var response = await _productService.AddProductAsync(newProduct);
-      if (!ModelState.IsValid)
-            {
-                throw new ValidationException("Invalid Product Data");
-            }
+         var response = await _productService.AddProductAsync(newProduct);
             return ApiResponse.Created(response);
     }
 
