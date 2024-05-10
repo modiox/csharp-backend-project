@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using api.Controllers;
+using api.Middlewares;
 using Microsoft.AspNetCore.Mvc;
 
 [Route("api/carts")]
@@ -19,7 +20,7 @@ public class CartController : ControllerBase
         var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (string.IsNullOrEmpty(userIdString))
         {
-            return ApiResponse.UnAuthorized("User Id is missing from token");
+            throw new UnauthorizedAccessException("User Id is missing from token");
         }
         var cartItems = await _cartService.GetCartItemsAsync(userId);
 
@@ -29,7 +30,7 @@ public class CartController : ControllerBase
         }
         else
         {
-            return ApiResponse.ServerError("Failed to fetch cart items.");
+            throw new Exception("Failed to fetch cart items.");
         }
     }
 
@@ -39,11 +40,11 @@ public class CartController : ControllerBase
         var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (string.IsNullOrEmpty(userIdString))
         {
-            return ApiResponse.UnAuthorized("User Id is missing from token");
+             throw new UnauthorizedAccessException("User Id is missing from token");
         }
         if (!Guid.TryParse(userId, out Guid userIDGuid))
         {
-            return ApiResponse.BadRequest("Invalid user ID Format");
+            throw new BadRequestException("Invalid user ID Format");
         }
 
         if (await _cartService.AddToCartAsync(productId, userIDGuid))
@@ -52,7 +53,7 @@ public class CartController : ControllerBase
         }
         else
         {
-            return ApiResponse.ServerError("Failed to add product to cart.");
+            throw new Exception("Failed to add product to cart.");
         }
     }
 }

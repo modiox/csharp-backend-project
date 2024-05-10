@@ -4,6 +4,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using api.Controllers;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Middlewares
 {
@@ -77,10 +79,20 @@ namespace api.Middlewares
                     responseCode = StatusCodes.Status400BadRequest;
                     message = validationException.Message;
                     break;
+                    
+                case InvalidOperationException invalidOperationException:
+                    responseCode = StatusCodes.Status400BadRequest;
+                    message = invalidOperationException.Message;
+                    break;
 
                 case UnauthorizedAccessException unauthorizedAccessException:
                     responseCode = StatusCodes.Status401Unauthorized;
                     message = unauthorizedAccessException.Message;
+                    break;
+
+                case DbUpdateException dbUpdateException:
+                    responseCode = StatusCodes.Status409Conflict;
+                    message = dbUpdateException.InnerException.Message ?? "Internal server error";
                     break;
 
                 case ForbiddenAccessException forbiddenAccessException:

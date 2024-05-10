@@ -36,8 +36,6 @@ public class UserService
 
     public async Task<User> CreateUser(UserModel newUser)
     {
-        try
-        {
             User createUser = new User
             {
                 Username = newUser.Username,
@@ -57,18 +55,10 @@ public class UserService
             await _dbContext.SaveChangesAsync();
 
             return createUser;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error occurred while creating a new user.");
-            throw;
-        }
     }
 
     public async Task<bool> UpdateUser(Guid userId, UserModel updateUser)
     {
-        try
-        {
             var existingUser = _dbContext.Users.FirstOrDefault(u => u.UserID == userId);
             if (existingUser != null && updateUser != null)
             {
@@ -85,12 +75,6 @@ public class UserService
             }
 
             return false; // Return false if either existingUser or updateUser is null
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, $"Error occurred while updating user with ID: {userId}.");
-            return false; // Return false if an exception occurs during the update operation
-        }
     }
 
 
