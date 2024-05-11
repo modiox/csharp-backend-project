@@ -81,7 +81,6 @@ public class ProductService
         return false;
     }
 
-  
     public async Task<IEnumerable<Product>> SearchProductsAsync(string? searchKeyword, decimal? minPrice = 0, decimal? maxPrice = decimal.MaxValue, string? sortBy = null, bool isAscending = true, int page = 1, int pageSize = 3)
     {
         var query = _appDbContext.Products

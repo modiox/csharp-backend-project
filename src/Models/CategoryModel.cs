@@ -7,5 +7,4 @@ public class CategoryModel
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     
     public List<ProductModel> Products { get; set; } = new List<ProductModel>();
-
 }

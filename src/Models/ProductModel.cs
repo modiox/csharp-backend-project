@@ -2,7 +2,6 @@ using System.ComponentModel.DataAnnotations;
 
 public class ProductModel 
 {
-
     public Guid ProductID { get; set; } = Guid.NewGuid();
 
     [Required(ErrorMessage = "Product name is required")]
@@ -21,6 +20,4 @@ public class ProductModel
     public required Guid CategoryID {get;set;}
     public CategoryModel? Category { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-
-
 }

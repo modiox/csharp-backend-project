@@ -10,6 +10,7 @@ public class UserService
     private readonly ILogger<UserService> _logger;
     private readonly IMapper _mapper;
     private readonly IPasswordHasher<User> _passwordHasher;
+
     public UserService(AppDBContext dbContext, ILogger<UserService> logger, IPasswordHasher<User> passwordHasher, IMapper mapper)
     {
 
@@ -21,6 +22,7 @@ public class UserService
 
     public async Task<List<UserDto>> GetAllUsersAsync()
     {
+        
         // return await _dbContext.Users.Include(user => user.Orders).ToListAsync();
         var users = await _dbContext.Users.Select(user => _mapper.Map<UserDto>(user)).ToListAsync();
         return  users;
@@ -76,7 +78,6 @@ public class UserService
 
             return false; // Return false if either existingUser or updateUser is null
     }
-
 
     public async Task<bool> DeleteUser(Guid userId)
     {

@@ -1,4 +1,3 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using EntityFramework;
@@ -31,5 +30,4 @@ public class Product
 
     public virtual Cart? Cart {set; get;} 
     public List<Order> Orders { get; set; } = new List<Order>();
-
 }
