@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Controllers
 {
     [ApiController]
-    [Route("/api/order")]
+    [Route("/api/")]
     public class OrderController : ControllerBase
     {
         private readonly OrderService _orderService;
@@ -17,7 +17,7 @@ namespace Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpGet]
+        [HttpGet("history/orders")]
         public async Task<IActionResult> GetAllOrder()
         {
             var orders = await _orderService.GetAllOrdersService();
@@ -26,7 +26,7 @@ namespace Controllers
 
         // Only unbanned Users can get their orders 
         [Authorize(Roles = "notBanned")]
-        [HttpGet("my-order")]
+        [HttpGet("history/my-orders")]
         public async Task<IActionResult> GetMyOrders()
         {
             var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -50,7 +50,7 @@ namespace Controllers
 
         // Only Admin can return orders by chosen Id
         [Authorize(Roles = "Admin")]
-        [HttpGet("{orderId}")]
+        [HttpGet("history/orders/{orderId}")]
         public async Task<IActionResult> GetOrderById(Guid orderId)
         {
             var order = await _orderService.GetOrderById(orderId);
@@ -63,9 +63,10 @@ namespace Controllers
         }
 
         [Authorize(Roles = "notBanned")]
-        [HttpPost]
-        public async Task<IActionResult> CreateOrder(OrderModel newOrder)
+        [HttpPost("post/{productId}/create-order")]
+        public async Task<IActionResult> CreateOrder(Guid productId, PaymentMethod paymentMethod)
         {
+            // Create Order
             var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(userIdString))
             {
@@ -75,25 +76,28 @@ namespace Controllers
             {
                 throw new BadRequestException("Invalid User Id");
             }
-            await _orderService.CreateOrderService(userId, newOrder);
+            var orderId = await _orderService.CreateOrderService(userId, paymentMethod);
+
+            // Add product the order
+            await _orderService.AddProductToOrder(orderId, productId);
             return ApiResponse.Created("Order has added successfully!");
         }
 
-        [Authorize(Roles = "notBanned")]
-        [HttpPost("{orderId}")]
-        public async Task<IActionResult> AddProductToOrder(Guid orderId, Guid productId)
-        {
-            var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userIdString))
-            {
-                throw new UnauthorizedAccessException("User Id is missing from token");
-            }
-            await _orderService.AddProductToOrder(orderId, productId);
-            return ApiResponse.Created("Products Added to the order successfully");
-        }
+        // [Authorize(Roles = "notBanned")]
+        // [HttpPost("{orderId}")]
+        // public async Task<IActionResult> AddProductToOrder(Guid orderId, Guid productId)
+        // {
+        //     var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        //     if (string.IsNullOrEmpty(userIdString))
+        //     {
+        //         throw new UnauthorizedAccessException("User Id is missing from token");
+        //     }
+        //     await _orderService.AddProductToOrder(orderId, productId);
+        //     return ApiResponse.Created("Products Added to the order successfully");
+        // }
 
         [Authorize(Roles = "Admin")]
-        [HttpPut("{orderId}")]
+        [HttpPut("history/orders/{orderId}/update")]
         public async Task<IActionResult> UpdateOrder(string orderId, OrderModel updateOrder)
         {
             var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -114,7 +118,7 @@ namespace Controllers
         }
 
         [Authorize(Roles = "notBanned")]
-        [HttpPut("update-my-order/{orderId}")]
+        [HttpPut("history/my-orders/{orderId}/update")]
         public async Task<IActionResult> UpdateMyOrder(string orderId, OrderModel updateOrder)
         {
             var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -139,7 +143,7 @@ namespace Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpDelete("{orderId}")]
+        [HttpDelete("history/orders/{orderId}/delete")]
         public async Task<IActionResult> DeleteOrder(string orderId)
         {
             var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -160,7 +164,7 @@ namespace Controllers
         }
 
         [Authorize(Roles = "notBanned")]
-        [HttpDelete("my-order/delete/{orderId}")]
+        [HttpDelete("history/my-orders/{orderId}/delete")]
         public async Task<IActionResult> DeleteMyOrder(string orderId)
         {
             var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;

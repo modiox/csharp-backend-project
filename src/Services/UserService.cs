@@ -77,7 +77,6 @@ public class UserService
             return false; // Return false if either existingUser or updateUser is null
     }
 
-
     public async Task<bool> DeleteUser(Guid userId)
     {
 

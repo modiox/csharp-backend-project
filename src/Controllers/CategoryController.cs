@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
-[Route("/api/categories")]
+[Route("/api/")]
 public class CategoryController : ControllerBase
 {
     private readonly CategoryService _categoryService;
@@ -14,7 +14,7 @@ public class CategoryController : ControllerBase
         _categoryService = categoryService;
     }
 
-    [HttpGet]
+    [HttpGet("categories")]
     public async Task<IActionResult> GetAllCategory()
     {
         var categories = await _categoryService.GetAllCategoryService();
@@ -26,7 +26,7 @@ public class CategoryController : ControllerBase
     }
 
 
-    [HttpGet("{categoryId:guid}")]
+    [HttpGet("categories/{categoryId:guid}")]
     public async Task<IActionResult> GetCategory(Guid categoryId)
     {
         var category = await _categoryService.GetCategoryById(categoryId);
@@ -42,7 +42,7 @@ public class CategoryController : ControllerBase
 
 
     [Authorize(Roles = "Admin")]
-    [HttpPost]
+    [HttpPost("account/dashboard/categories/new-category")]
     public async Task<IActionResult> CreateCategory(CategoryModel newCategory)
     {
         var result = await _categoryService.CreateCategoryService(newCategory);
@@ -55,7 +55,7 @@ public class CategoryController : ControllerBase
 
 
     [Authorize(Roles = "Admin")]
-    [HttpPut("{categoryId:guid}")]
+    [HttpPut("account/dashboard/categories/{categoryId:guid}/update")]
     public async Task<IActionResult> UpdateCategory(Guid categoryId, CategoryModel updateCategory)
     {
        var result = await _categoryService.UpdateCategoryService(categoryId, updateCategory);
@@ -68,7 +68,7 @@ public class CategoryController : ControllerBase
 
 
     [Authorize(Roles = "Admin")]
-    [HttpDelete("{categoryId:guid}")]
+    [HttpDelete("account/dashboard/categories/{categoryId:guid}/delete")]
     public async Task<IActionResult> DeleteCategory(Guid categoryId)
     {
         var result = await _categoryService.DeleteCategoryService(categoryId);

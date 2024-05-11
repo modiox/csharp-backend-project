@@ -24,7 +24,7 @@ public class OrderService
         return await _appDbContext.Orders.Include(o => o.Products).FirstOrDefaultAsync(o => o.OrderId == orderId);
     }
 
-    public async Task<Guid> CreateOrderService(Guid userId, OrderModel newOrder)
+    public async Task<Guid> CreateOrderService(Guid userId, PaymentMethod paymentMethod)
     {
         // Create record
         var order = new Order
@@ -32,8 +32,8 @@ public class OrderService
             OrderId = Guid.NewGuid(),
             UserId = userId,
             Status = OrderStatus.Pending,
-            Payment = newOrder.Payment,
-            Amount = newOrder.Amount,
+            Payment = paymentMethod,
+            Amount = 0,
         };
 
         // Add the record to the context
@@ -58,6 +58,7 @@ public class OrderService
 
             order.Products.Add(product);
             product.Quantity--;
+            order.Amount = (double) product.Price;
             await _appDbContext.SaveChangesAsync();
         }
         else
