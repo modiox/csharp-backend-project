@@ -20,6 +20,5 @@ namespace EntityFramework
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         public List<Product> Products { get; set; } = new List<Product>();
-
     }
 }

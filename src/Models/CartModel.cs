@@ -9,6 +9,4 @@ public class CartModel
     public Guid UserID { get; set; }
     public ProductModel Product { get; set; }
     public UserModel User { get; set; }
-
-
 }

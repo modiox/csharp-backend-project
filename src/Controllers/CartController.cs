@@ -14,13 +14,17 @@ public class CartController : ControllerBase
         _cartService = cartService;
     }
 
-    [HttpGet("{userId}")]
-    public async Task<IActionResult> GetCartItems(Guid userId)
+    [HttpGet]
+    public async Task<IActionResult> GetCartItems()
     {
         var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (string.IsNullOrEmpty(userIdString))
         {
             throw new UnauthorizedAccessException("User Id is missing from token");
+        }
+        if (!Guid.TryParse(userIdString, out Guid userId))
+        {
+            throw new BadRequestException("Invalid User Id");
         }
         var cartItems = await _cartService.GetCartItemsAsync(userId);
 
@@ -35,19 +39,19 @@ public class CartController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddToCart(Guid productId, string userId)
+    public async Task<IActionResult> AddToCart(Guid productId)
     {
         var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (string.IsNullOrEmpty(userIdString))
         {
-             throw new UnauthorizedAccessException("User Id is missing from token");
+            throw new UnauthorizedAccessException("User Id is missing from token");
         }
-        if (!Guid.TryParse(userId, out Guid userIDGuid))
+        if (!Guid.TryParse(userIdString, out Guid userId))
         {
             throw new BadRequestException("Invalid user ID Format");
         }
 
-        if (await _cartService.AddToCartAsync(productId, userIDGuid))
+        if (await _cartService.AddToCartAsync(productId, userId))
         {
             return ApiResponse.Created("Product added to cart successfully.");
         }

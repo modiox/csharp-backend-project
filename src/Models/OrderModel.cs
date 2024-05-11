@@ -24,7 +24,4 @@ public class OrderModel
   public Guid UserId { get; set; }
 
   public virtual UserModel? User { get; set; }
-
-
-
 }
