@@ -14,6 +14,7 @@ public class ProductController : ControllerBase
         _productService = productService;
     }
 
+
     [HttpGet("products")]
     public async Task<IActionResult> GetAllProduct([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 5)
     {
@@ -62,6 +63,7 @@ public class ProductController : ControllerBase
     [HttpPost("dashboard/new-post")]
     public async Task<IActionResult> AddProduct(ProductModel newProduct)
     {
+
         var response = await _productService.AddProductAsync(newProduct);
         return ApiResponse.Created(response);
     }
@@ -70,6 +72,8 @@ public class ProductController : ControllerBase
     [HttpPut("dashboard/products/{productId:guid}/update")]
     public async Task<IActionResult> UpdateProduct(Guid productId, ProductModel updateProduct)
     {
+
+       
         var result = await _productService.UpdateProductService(productId, updateProduct);
         if (!result)
         {

@@ -7,6 +7,7 @@ public class Category
 
     public required string Name { get; set; }
     public string Description { get; set; } = string.Empty;
+    public string? ImgUrl { get; set; }
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 

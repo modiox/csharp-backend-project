@@ -19,6 +19,8 @@ public class Product
     [Required(ErrorMessage = "Price is required")]
     public decimal Price { get; set; }
 
+    [MaxLength(250)] public string? ImgUrl { get; set; }
+
     [Required(ErrorMessage = "CategoryId is required")]
     public Guid CategoryId { get; set; }
 

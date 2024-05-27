@@ -92,6 +92,17 @@ public class UserService
         return false;
     }
 
+    public async Task<User?> BanUnBanUser(Guid userId){
+        var user = _dbContext.Users.FirstOrDefault(u => u.UserID == userId);
+        if (user != null)
+        {
+            user.IsBanned = !user.IsBanned;
+            await _dbContext.SaveChangesAsync();
+            return user;
+        }
+        return null;
+    }
+
     public async Task<UserDto?> LoginUserAsync(LoginDto loginDto)
     {
         var user = await _dbContext.Users.SingleOrDefaultAsync(u => u.Email == loginDto.Email);

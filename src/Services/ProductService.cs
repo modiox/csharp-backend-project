@@ -1,14 +1,18 @@
+using AutoMapper;
 using Dtos.Pagination;
 using Microsoft.EntityFrameworkCore;
+
 public class ProductService
 {
     private readonly AppDBContext _appDbContext;
-    public ProductService(AppDBContext appDBContext)
+    private readonly IMapper _mapper;
+    public ProductService(AppDBContext appDBContext, IMapper mapper)
     {
         _appDbContext = appDBContext;
+        _mapper = mapper;
     }
 
-    public async Task<PaginationResult<Product>> GetAllProductService(int pageNumber, int pageSize)
+    public async Task<PaginationResult<ProductModel>> GetAllProductService(int pageNumber, int pageSize)
     {
         var totalCount = _appDbContext.Products.Count();
         var totalPages = (int)Math.Ceiling((decimal)totalCount / pageSize);
@@ -17,10 +21,9 @@ public class ProductService
             .ThenByDescending(b => b.ProductID)
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
-            .Include(p => p.Category)
-            .ToListAsync();
+            .Select(product => _mapper.Map<ProductModel>(product)).ToListAsync();
 
-        return new PaginationResult<Product>
+        return new PaginationResult<ProductModel>
         {
             Items = page,
             TotalCount = totalCount,
@@ -31,7 +34,7 @@ public class ProductService
 
     public async Task<Product?> GetProductById(Guid productId)
     {
-        return await _appDbContext.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.ProductID == productId);
+        return await _appDbContext.Products.FirstOrDefaultAsync( p => p.ProductID == productId);
     }
 
     public async Task<Guid> AddProductAsync(ProductModel newProduct)
@@ -45,6 +48,7 @@ public class ProductService
             Quantity = newProduct.Quantity,
             Price = newProduct.Price,
             CategoryId = newProduct.CategoryID,
+            ImgUrl = newProduct.ImgUrl,
             CreatedAt = DateTime.UtcNow
 
         };
@@ -63,6 +67,7 @@ public class ProductService
             existingProduct.Quantity = updateProduct.Quantity;
             existingProduct.Price = updateProduct.Price;
             existingProduct.CategoryId = updateProduct.CategoryID;
+            existingProduct.ImgUrl = updateProduct.ImgUrl;
             await _appDbContext.SaveChangesAsync();
             return true;
         }

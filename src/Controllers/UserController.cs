@@ -100,25 +100,40 @@ public class UserController : ControllerBase
 
     }
 
-    [HttpPut("account/my-profile/update")]
-    public async Task<IActionResult> UpdateUser(UserModel updateUser)
+
+
+    [HttpPut("users/update")]
+    public async Task<IActionResult> UpdateUser([FromBody] UserModel updateUser)
     {
-        var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (string.IsNullOrEmpty(userIdString))
+        try
         {
-            throw new UnauthorizedAccessException("User Id is missing from token");
+            var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdString))
+            {
+                return Unauthorized("User Id is missing from token");
+            }
+
+            if (!Guid.TryParse(userIdString, out Guid userId))
+            {
+                return BadRequest("Invalid User Id");
+            }
+
+            var userUpdated = await _userService.UpdateUser(userId, updateUser);
+            if (!userUpdated)
+            {
+                return NotFound("User does not exist or an invalid Id is provided");
+            }
+
+            return Ok(new { message = "User is updated successfully" });
         }
-        if (!Guid.TryParse(userIdString, out Guid userId))
+        catch (Exception ex)
         {
-            throw new BadRequestException("Invalid User Id");
+            // Log the exception for debugging purposes
+            Console.WriteLine($"An error occurred while updating user: {ex.Message}");
+            return StatusCode(500, "An unexpected error occurred");
         }
-        var user = await _userService.UpdateUser(userId, updateUser);
-        if (!user)
-        {
-            throw new NotFoundException("User does not exist or an invalid Id is provided");
-        }
-        return ApiResponse.Updated("User is updated successfully");
     }
+
 
 
     [HttpDelete("account/my-profile/delete")]
@@ -139,5 +154,17 @@ public class UserController : ControllerBase
             throw new NotFoundException("User does not exist or an invalid Id is provided");
         }
         return ApiResponse.Deleted("User is deleted successfully");
+    }
+
+    [Authorize(Roles ="Admin")]
+    [HttpPut("users/banUnban/{userId}")]
+    public async Task<IActionResult> BanUnBan(Guid userId)
+    {
+        var user = await _userService.BanUnBanUser(userId);
+        if(user == null)
+        {
+            throw new NotFoundException("User doesn't exist or the provided is an invalid ID");
+        }
+        return ApiResponse.Success(user, "Updated ban status successfully");
     }
 }

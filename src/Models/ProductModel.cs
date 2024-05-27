@@ -1,4 +1,6 @@
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
 
 public class ProductModel 
 {
@@ -7,7 +9,9 @@ public class ProductModel
     [Required(ErrorMessage = "Product name is required")]
     [StringLength(50)]
     public required string ProductName {get;set;}
-    
+
+   public string? ImgUrl { get; set; }
+
     public string Description {get;set;}=string.Empty;
 
     [Required(ErrorMessage = "Quantity is required")]
@@ -20,4 +24,9 @@ public class ProductModel
     public required Guid CategoryID {get;set;}
     public CategoryModel? Category { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+    internal object ToListAsync()
+    {
+        throw new NotImplementedException();
+    }
 }
