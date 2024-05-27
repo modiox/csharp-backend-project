@@ -14,6 +14,7 @@ using api.Mapper;
 var builder = WebApplication.CreateBuilder(args);
 // Load environment variables from .env file
 
+
 DotNetEnv.Env.Load();
 
 // Get JWT settings from environment variables
@@ -76,7 +77,7 @@ builder.Services.AddControllers();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<OrderService>();
 builder.Services.AddScoped<CategoryService>();
-builder.Services.AddScoped<ProductService>(); // //Will uncomment once added 
+builder.Services.AddScoped<ProductService>(); 
 builder.Services.AddScoped<CartService>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
@@ -128,5 +129,7 @@ if (app.Environment.IsDevelopment())
 app.UseCors("AllowSpecificOrigins");
 app.UseHttpsRedirection();
 app.MapControllers();
- app.UseMiddleware<ExceptionHandlingMiddleware>();
-app.Run("http://localhost:5343");
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+var port = Environment.GetEnvironmentVariable("PORT") ?? "5125";
+// Run the application, binding to 0.0.0.0 and the specified port
+app.Run($"http://0.0.0.0:{port}");
