@@ -31,11 +31,11 @@ var defaultConnection = Environment.GetEnvironmentVariable("DefaultConnection") 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddCors(options =>{
-    options.AddPolicy("AllowSpecificOrigins", builder => {
+    options.AddPolicy("AllowAllOrigins", builder => {
         builder.WithOrigins("http://localhost:3000", "https://urban-threads.netlify.app") //Specifies the Front-End port & display content on :)
         .AllowAnyHeader()
         .AllowAnyMethod()
-        .AllowCredentials();   //Token ?? 
+        .AllowCredentials();  
     });
 
 });
